@@ -39,7 +39,7 @@ bool Item::requestMove(Direction direction)
     tile = &t;
     tile->item = this;
 
-    move_timer.start(1.0);
+    move_timer.start(0.5);
     old_position = getPosition3D();
     new_position = tile->position + tile->side.up * 0.5;
     return true;

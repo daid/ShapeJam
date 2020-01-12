@@ -10,3 +10,13 @@ public:
     virtual void onUpdate(float delta) override;
     virtual bool accepts(ItemType& type) override { return true; }
 };
+class Splitter : public Building
+{
+public:
+    Splitter(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal);
+
+    virtual void onUpdate(float delta) override;
+    virtual bool accepts(ItemType& type) override { return true; }
+private:
+    bool flip = false;
+};

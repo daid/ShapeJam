@@ -14,12 +14,23 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
 {
     sp::P<Building> building;
 
-    if (name == "MINER")
+    switch(building_type)
+    {
+    case BuildingType::None:
+        break;
+    case BuildingType::Miner:
         building = new Miner(world, position, normal);
-    if (name == "BELT")
+        break;
+    case BuildingType::Belt:
         building = new Belt(world, position, normal);
-    if (name == "FACTORY")
+        break;
+    case BuildingType::Splitter:
+        building = new Splitter(world, position, normal);
+        break;
+    case BuildingType::Factory:
         building = new Factory(world, position, normal);
+        break;
+    }
 
     if (building)
     {
@@ -50,6 +61,14 @@ void ItemType::init()
         auto entry = std::unique_ptr<ItemType>(new ItemType());
         entry->name = info.first;
         entry->texture = "item/" + info.second["texture"];
+        if (info.second["building"].lower() == "miner")
+            entry->building_type = BuildingType::Miner;
+        if (info.second["building"].lower() == "belt")
+            entry->building_type = BuildingType::Belt;
+        if (info.second["building"].lower() == "splitter")
+            entry->building_type = BuildingType::Splitter;
+        if (info.second["building"].lower() == "factory")
+            entry->building_type = BuildingType::Factory;
         items[info.first] = std::move(entry);
     }
 }

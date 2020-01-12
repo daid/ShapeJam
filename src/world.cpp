@@ -1,4 +1,5 @@
 #include "world.h"
+#include "itemType.h"
 
 #include <sp2/scene/voxelmap.h>
 #include <sp2/collision/3d/box.h>
@@ -17,6 +18,17 @@ Tile& Tile::getTile(Direction direction)
     if (&t == this)
         return side.world.getSideAt(offset).getTileAt(position + offset);
     return t;
+}
+
+ItemType* Tile::getMineType()
+{
+    if (ground_type == 1)
+        return &ItemType::get("1");
+    if (ground_type == 2)
+        return &ItemType::get("2");
+    if (ground_type == 3)
+        return &ItemType::get("3");
+    return nullptr;
 }
 
 WorldSide::WorldSide(World& world, int size, sp::Quaterniond rotation)

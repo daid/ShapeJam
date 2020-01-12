@@ -12,6 +12,14 @@ class ItemType
 public:
     sp::string name;
     sp::string texture;
+    enum class BuildingType
+    {
+        None,
+        Miner,
+        Belt,
+        Splitter,
+        Factory
+    } building_type = BuildingType::None;
 
     sp::P<sp::Node> placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal);
 

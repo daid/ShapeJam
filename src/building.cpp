@@ -22,8 +22,8 @@ Building::Building(sp::P<World> world, sp::Vector3d position, sp::Vector3d norma
             if (t.building || (p - t.position).length() > 0.7)
                 return;
             //TODO: Placing a building on an item is generally not proper, but could be acceptable for belts
-            if (t.item)
-                return;
+            //if (t.item)
+            //    return;
         }
     }
     for(int x=0; x<size.x; x++)

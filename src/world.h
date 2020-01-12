@@ -13,6 +13,7 @@ enum class Direction
 
 class Building;
 class Item;
+class ItemType;
 class World;
 class WorldSide;
 class Tile
@@ -25,6 +26,7 @@ public:
     sp::P<Item> item;
 
     Tile& getTile(Direction direction);
+    ItemType* getMineType();
 };
 class WorldSide
 {

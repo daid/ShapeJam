@@ -5,4 +5,7 @@
     [BELT] {
         frames: 0
     }
+    [SPLITTER] {
+        frames: 1
+    }
 }

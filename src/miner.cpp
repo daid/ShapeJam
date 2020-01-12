@@ -24,16 +24,17 @@ void Miner::onUpdate(float delta)
             mine_tile = &mine_tile->getTile(Direction::Right);
         mine_spot = (mine_spot + 1) % 4;
 
-        if (mine_tile->ground_type)
+        ItemType* mine_type = mine_tile->getMineType();
+        if (mine_type)
         {
             Tile& tile = getTile(sp::Vector2i(0, 1));
             Tile& exit_tile = tile.getTile(direction);
 
-            if (!tile.item && !exit_tile.item)
+            if (!tile.item && !exit_tile.item && (!exit_tile.building || exit_tile.building->accepts(*mine_type)))
             {
-                ItemType& type = ItemType::get(sp::string(mine_tile->ground_type));
-                Item* item = new Item(&tile, type);
-                item->requestMove(direction);
+                sp::P<Item> item = new Item(&tile, *mine_type);
+                if (!item->requestMove(direction))
+                    item.destroy();
             }
         }
     }

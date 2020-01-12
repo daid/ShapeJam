@@ -12,10 +12,17 @@
 }
 [MINER] {
     texture: miner.png
+    building: miner
 }
 [BELT] {
     texture: belt.png
+    building: belt
+}
+[SPLITTER] {
+    texture: splitter.png
+    building: splitter
 }
 [FACTORY] {
     texture: factory.png
+    building: factory
 }

@@ -56,6 +56,7 @@ Scene::Scene()
     addInventory(ItemType::get("3"), 10);
     addInventory(ItemType::get("MINER"), 10);
     addInventory(ItemType::get("BELT"), 100);
+    addInventory(ItemType::get("SPLITTER"), 10);
     addInventory(ItemType::get("FACTORY"), 10);
 }
 
@@ -68,6 +69,7 @@ bool Scene::onPointerDown(sp::io::Pointer::Button button, sp::Ray3d ray, int id)
     }
     else
     {
+        stopPickup();
         pointer_action = PointerAction::SelectPlaceOrRotateView;
     }
     pointer_position = getCamera()->getGlobalTransform().inverse() * sp::Vector3f(ray.start);
@@ -165,6 +167,10 @@ void Scene::onUpdate(float delta)
                 addInventory(*pickup_tile->building->placed_from_type, 1);
                 pickup_tile->building.destroy();
             }
+            else if (pickup_tile->getMineType())
+            {
+                addInventory(*pickup_tile->getMineType(), 1);
+            }
             pickup_indicator.destroy();
             startPickup(pickup_tile);
         }
@@ -175,9 +181,9 @@ void Scene::startPickup(Tile* tile)
 {
     stopPickup();
     pickup_tile = tile;
-    if (pickup_tile && (pickup_tile->item || pickup_tile->building))
+    if (pickup_tile && (pickup_tile->item || pickup_tile->building || pickup_tile->getMineType()))
     {
-        pickup_timer.start(0.5);
+        pickup_timer.start(0.7);
 
         pickup_indicator = new sp::Node(&pickup_tile->side.world);
         if (pickup_tile->building)
