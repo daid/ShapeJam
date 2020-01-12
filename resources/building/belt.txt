@@ -1,0 +1,8 @@
+{
+    texture: building/belt.png
+    size: 1, 1
+    frame_size: 32, 32
+    [BELT] {
+        frames: 0
+    }
+}

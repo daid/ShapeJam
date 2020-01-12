@@ -13,6 +13,8 @@
 #include <sp2/graphics/scene/basicnoderenderpass.h>
 #include <sp2/graphics/scene/collisionrenderpass.h>
 #include <sp2/graphics/textureManager.h>
+#include <sp2/graphics/spriteAnimation.h>
+#include <sp2/graphics/textureAtlas.h>
 #include <sp2/scene/scene.h>
 #include <sp2/scene/node.h>
 #include <sp2/scene/camera.h>
@@ -28,7 +30,7 @@ Controller controller;
 
 //Set to true to enable mod loading support.
 static bool can_load_mod = false;
-
+static sp::AtlasManager sprite_atlas_manager(sp::Vector2i(2048, 2048));
 
 static void openOptionsMenu();
 static void openCreditsMenu();
@@ -182,7 +184,8 @@ int main(int argc, char** argv)
     sp::io::ResourceProvider::createDefault();
 
     //Disable or enable smooth filtering by default, enabling it gives nice smooth looks, but disabling it gives a more pixel art look.
-    sp::texture_manager.setDefaultSmoothFiltering(false);
+    sp::texture_manager.setDefaultSmoothFiltering(true);
+    sp::SpriteAnimation::setAtlasManager(&sprite_atlas_manager);
 
     //Create a window to render on, and our engine.
     window = new sp::Window();

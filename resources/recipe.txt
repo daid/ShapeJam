@@ -1,0 +1,10 @@
+[SQUARE2] {
+    time: 17
+    [INPUT] {
+        1: 1
+        2: 5
+    }
+    [OUTPUT] {
+        SQUARE2: 5
+    }
+}

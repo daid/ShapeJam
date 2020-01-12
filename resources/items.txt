@@ -1,0 +1,21 @@
+[1] {
+    texture: 1.png
+}
+[2] {
+    texture: 2.png
+}
+[3] {
+    texture: 3.png
+}
+[SQUARE2] {
+    texture: square2.png
+}
+[MINER] {
+    texture: miner.png
+}
+[BELT] {
+    texture: belt.png
+}
+[FACTORY] {
+    texture: factory.png
+}

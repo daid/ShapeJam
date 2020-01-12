@@ -1,0 +1,34 @@
+[HUD] {
+    stretch: true
+
+    [INVENTORY] {
+        type: panel
+        alignment: left
+        layout: horizontal
+        match_content_size: true
+        padding: 5
+    }
+}
+
+[INVENTORY_ROW] {
+    layout: vertical
+    match_content_size: true
+}
+
+[INVENTORY_BUTTON] {
+    size: 20, 20
+    margin: 2
+    type: button
+    [IMAGE] {
+        stretch: true
+        type: image
+    }
+    [AMOUNT] {
+        stretch: true
+        type: label
+        text.alignment: bottom
+        text.size: 8
+        margin: 1
+        order: 1
+    }
+}
