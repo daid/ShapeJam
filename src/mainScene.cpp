@@ -152,6 +152,8 @@ void Scene::onUpdate(float delta)
         openMainMenu();
         return;
     }
+    if (!selected_building)
+        gui->getWidgetWithID("INFO_PANEL")->hide();
     if (pickup_timer.isRunning())
     {
         sp::MeshBuilder b;
@@ -197,6 +199,7 @@ void Scene::startPickup(Tile* tile)
         pickup_indicator->render_data.type = sp::RenderData::Type::Normal;
         pickup_indicator->render_data.shader = sp::Shader::get("shader/billboard.shader");
         pickup_indicator->render_data.texture = sp::texture_manager.get("gui/theme/pixel.png");
+        pickup_indicator->render_data.color = sp::Color(0.2, 1.0, 0.2);
     }
 }
 
@@ -236,6 +239,10 @@ void Scene::setSelection(sp::P<Building> building)
             recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", output.first.texture);
             recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(output.second));
         }
+        recipe_box->setEventCallback([this, recipe](sp::Variant v)
+        {
+            selected_building->setRecipe(recipe);
+        });
     }
 
     selection_indicator = new sp::Node(selected_building);

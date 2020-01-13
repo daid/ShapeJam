@@ -34,7 +34,7 @@ void Item::fakeMoveFrom(Direction direction)
     case Direction::Right: t = &tile->getTile(Direction::Left); break;
     case Direction::Left: t = &tile->getTile(Direction::Right); break;
     }
-    move_timer.start(0.5);
+    move_timer.start(0.25);
     old_position = t->position + t->side.up * 0.5;
     new_position = tile->position + tile->side.up * 0.5;
 }
@@ -54,7 +54,7 @@ bool Item::requestMove(Direction direction)
     tile = &t;
     tile->item = this;
 
-    move_timer.start(0.5);
+    move_timer.start(0.25);
     old_position = getPosition3D();
     new_position = tile->position + tile->side.up * 0.5;
     return true;

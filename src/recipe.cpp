@@ -19,8 +19,15 @@ void Recipe::init()
         entry->name = node.id;
         for(auto& it : node.findId("INPUT")->items)
             entry->input.push_back({ItemType::get(it.first), sp::stringutil::convert::toInt(it.second)});
-        for(auto& it : node.findId("OUTPUT")->items)
-            entry->output.push_back({ItemType::get(it.first), sp::stringutil::convert::toInt(it.second)});
+        if (node.findId("OUTPUT"))
+        {
+            for(auto& it : node.findId("OUTPUT")->items)
+                entry->output.push_back({ItemType::get(it.first), sp::stringutil::convert::toInt(it.second)});
+        }
+        else
+        {
+            entry->output.push_back({ItemType::get(node.id), 1});
+        }
         entry->craft_time = sp::stringutil::convert::toFloat(node.items["time"]);
         items[node.id] = std::move(entry);
     }

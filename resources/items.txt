@@ -66,6 +66,6 @@
     label: Basic Factory
     texture: factory.png
     building: factory
-    recipes: SQUARE2LINE3
+    recipes: SQUARE2LINE3 MINER SHAPER CUT_FACTORY BELT SPLITTER
     size: 2, 2
 }

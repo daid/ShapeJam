@@ -1,5 +1,5 @@
 [SQUARE2] {
-    time: 17
+    time: 11
     [INPUT] {
         1: 1
         2: 5
@@ -9,7 +9,7 @@
     }
 }
 [SQUARE3] {
-    time: 17
+    time: 12
     [INPUT] {
         1: 1
         3: 5
@@ -44,7 +44,49 @@
         SQUARE2: 1
         LINE3: 2
     }
-    [OUTPUT] {
+}
+
+[SHAPER] {
+    time: 10
+    [INPUT] {
+        SQUARE3: 10
+    }
+}
+
+[MINER] {
+    time: 10
+    [INPUT] {
+        SQUARE2: 10
+        SQUARE3: 3
+    }
+}
+[CUT_FACTORY] {
+    time: 10
+    [INPUT] {
+        SQUARE2: 10
+        SQUARE3: 5
+    }
+}
+[FACTORY] {
+    time: 10
+    [INPUT] {
+        SQUARE2: 15
+        TRIANGLE2: 5
+    }
+}
+
+[BELT] {
+    time: 1
+    [INPUT] {
+        SQUARE2: 1
+        TRIANGLE2: 2
+    }
+}
+[SPLITTER] {
+    time: 1
+    [INPUT] {
+        SQUARE2: 5
+        TRIANGLE2: 5
         SQUARE2LINE3: 1
     }
 }

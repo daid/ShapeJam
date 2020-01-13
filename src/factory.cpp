@@ -64,29 +64,43 @@ void Factory::idle()
         }
     }
 
-    for(auto& recipe : placed_from_type->recipes)
+    if (selected_recipe != nullptr)
     {
-        bool input_satisfied = true;
-        for(auto& input : recipe->input)
+        tryToMake(selected_recipe);
+    }
+    else
+    {
+        for(auto recipe : placed_from_type->recipes)
         {
-            if (getInventoryCount(&input.first) < input.second)
-            {
-                input_satisfied = false;
+            if (tryToMake(recipe))
                 break;
-            }
         }
-        if (input_satisfied)
+    }
+}
+
+bool Factory::tryToMake(const Recipe* recipe)
+{
+    bool input_satisfied = true;
+    for(auto& input : recipe->input)
+    {
+        if (getInventoryCount(&input.first) < input.second)
         {
-            for(auto& input : recipe->input)
-            {
-                removeInventory(&input.first, input.second);
-            }
-            creating = recipe;
-            animationPlay("ACTIVE");
-            create_timer.start(recipe->craft_time);
+            input_satisfied = false;
             break;
         }
     }
+    if (input_satisfied)
+    {
+        for(auto& input : recipe->input)
+        {
+            removeInventory(&input.first, input.second);
+        }
+        creating = recipe;
+        animationPlay("ACTIVE");
+        create_timer.start(recipe->craft_time);
+        return true;
+    }
+    return false;
 }
 
 void Factory::building()
@@ -124,7 +138,7 @@ bool Factory::accepts(ItemType& type)
     return false;
 }
 
-int Factory::getInventoryCount(ItemType* type)
+int Factory::getInventoryCount(const ItemType* type)
 {
     for(auto& inv : inventory)
         if (inv.type == type)
@@ -132,7 +146,7 @@ int Factory::getInventoryCount(ItemType* type)
     return 0;
 }
 
-int Factory::removeInventory(ItemType* type, int amount)
+int Factory::removeInventory(const ItemType* type, int amount)
 {
     for(auto& inv : inventory)
     {
@@ -144,4 +158,14 @@ int Factory::removeInventory(ItemType* type, int amount)
         }
     }
     return 0;
+}
+
+void Factory::setRecipe(const Recipe* recipe)
+{
+    selected_recipe = nullptr;
+    for(auto r : placed_from_type->recipes)
+    {
+        if (r == recipe)
+            selected_recipe = r;
+    }
 }

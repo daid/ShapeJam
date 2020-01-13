@@ -62,10 +62,10 @@
 }
 
 [RECIPE_BOX] {
-    type: panel
+    type: button
     layout: horizontal
     match_content_size: true
-    padding: 5
+    margin: 5
     [INPUT] {
         layout: vertical
         match_content_size: true

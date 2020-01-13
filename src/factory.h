@@ -13,13 +13,17 @@ public:
     virtual void onUpdate(float delta) override;
     virtual bool accepts(ItemType& type) override;
 
+    virtual void setRecipe(const Recipe* recipe) override;
+    virtual const Recipe* getRecipe() override { return selected_recipe; }
 private:
     void idle();
     void building();
     void ejecting();
 
-    int getInventoryCount(ItemType* type);
-    int removeInventory(ItemType* type, int amount);
+    bool tryToMake(const Recipe* recipe);
+
+    int getInventoryCount(const ItemType* type);
+    int removeInventory(const ItemType* type, int amount);
 
     std::vector<ItemType*> eject_list;
     class Inventory
@@ -31,5 +35,6 @@ private:
     };
     std::vector<Inventory> inventory;
     const Recipe* creating = nullptr;
+    const Recipe* selected_recipe = nullptr;
     sp::Timer create_timer;
 };

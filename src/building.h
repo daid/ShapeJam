@@ -23,6 +23,9 @@ public:
     void setDirection(Direction dir);
     Direction getDirection() { return direction; }
 
+    virtual void setRecipe(const Recipe* recipe) {}
+    virtual const Recipe* getRecipe() { return nullptr; }
+
     ItemType* placed_from_type;
 protected:
     Tile& getTile(sp::Vector2i offset);
