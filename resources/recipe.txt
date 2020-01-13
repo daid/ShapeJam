@@ -8,3 +8,43 @@
         SQUARE2: 5
     }
 }
+[SQUARE3] {
+    time: 17
+    [INPUT] {
+        1: 1
+        3: 5
+    }
+    [OUTPUT] {
+        SQUARE3: 5
+    }
+}
+
+[TRIANGLE2] {
+    time: 1
+    [INPUT] {
+        SQUARE2: 1
+    }
+    [OUTPUT] {
+        TRIANGLE2: 2
+    }
+}
+[LINE3] {
+    time: 1
+    [INPUT] {
+        SQUARE3: 1
+    }
+    [OUTPUT] {
+        LINE3: 3
+    }
+}
+
+[SQUARE2LINE3] {
+    time: 3
+    [INPUT] {
+        SQUARE2: 1
+        LINE3: 2
+    }
+    [OUTPUT] {
+        SQUARE2LINE3: 1
+    }
+}

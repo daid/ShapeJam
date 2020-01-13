@@ -1,5 +1,6 @@
 #include "itemType.h"
 #include "item.h"
+#include "recipe.h"
 #include "world.h"
 
 #include "miner.h"
@@ -19,7 +20,7 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
     case BuildingType::None:
         break;
     case BuildingType::Miner:
-        building = new Miner(world, position, normal);
+        building = new Miner(world, position, normal, *this);
         break;
     case BuildingType::Belt:
         building = new Belt(world, position, normal);
@@ -28,7 +29,7 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
         building = new Splitter(world, position, normal);
         break;
     case BuildingType::Factory:
-        building = new Factory(world, position, normal);
+        building = new Factory(world, position, normal, *this);
         break;
     }
 
@@ -60,6 +61,14 @@ void ItemType::init()
     {
         auto entry = std::unique_ptr<ItemType>(new ItemType());
         entry->name = info.first;
+        entry->label = info.first;
+        entry->size = sp::Vector2i(1, 1);
+        if (info.second.find("label") != info.second.end())
+            entry->label = info.second["label"];
+        if (info.second.find("size") != info.second.end())
+            entry->size = sp::stringutil::convert::toVector2i(info.second["size"]);
+        entry->size.x = std::max(1, entry->size.x);
+        entry->size.y = std::max(1, entry->size.y);
         entry->texture = "item/" + info.second["texture"];
         if (info.second["building"].lower() == "miner")
             entry->building_type = BuildingType::Miner;
@@ -70,6 +79,19 @@ void ItemType::init()
         if (info.second["building"].lower() == "factory")
             entry->building_type = BuildingType::Factory;
         items[info.first] = std::move(entry);
+    }
+}
+
+void ItemType::initRecipes()
+{
+    for(auto info : sp::io::KeyValueTreeLoader::load("items.txt")->getFlattenNodesByIds())
+    {
+        if (info.second.find("recipes") != info.second.end())
+        {
+            items[info.first]->recipes.clear();
+            for(auto s : info.second["recipes"].split(" "))
+                items[info.first]->recipes.push_back(&Recipe::get(s));
+        }
     }
 }
 

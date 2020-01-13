@@ -14,6 +14,8 @@ public:
     Building(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal, sp::Vector2i size);
     virtual ~Building();
 
+    sp::Vector2i getSize() { return size; }
+
     bool isPlaced() { return placed; }
     virtual bool accepts(ItemType& type) { return false; }
 

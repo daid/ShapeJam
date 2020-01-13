@@ -5,15 +5,13 @@
 #include <sp2/graphics/spriteAnimation.h>
 
 
-Factory::Factory(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal)
-: Building(world, position, normal, sp::Vector2i(2, 2))
+Factory::Factory(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal, const ItemType& type)
+: Building(world, position, normal, type.size)
 {
-    setAnimation(sp::SpriteAnimation::load("building/factory.txt"));
+    setAnimation(sp::SpriteAnimation::load("building/" + type.name.lower() + ".txt"));
     animationPlay("IDLE");
 
-    recipe_list.push_back(&Recipe::get("SQUARE2"));
-
-    for(auto recipe : recipe_list)
+    for(auto recipe : type.recipes)
     {
         for(auto& it : recipe->input)
         {
@@ -66,7 +64,7 @@ void Factory::idle()
         }
     }
 
-    for(auto& recipe : recipe_list)
+    for(auto& recipe : placed_from_type->recipes)
     {
         bool input_satisfied = true;
         for(auto& input : recipe->input)
@@ -104,13 +102,12 @@ void Factory::building()
 
 void Factory::ejecting()
 {
-    Tile& tile = getTile(sp::Vector2i(0, size.y - 1));
-    Tile& exit_tile = tile.getTile(direction);
+    Tile& exit_tile = getTile(sp::Vector2i(0, size.y - 1)).getTile(direction);
 
-    if (!tile.item && !exit_tile.item)
+    if (!exit_tile.item)
     {
-        Item* item = new Item(&tile, *eject_list.back());
-        item->requestMove(direction);
+        Item* item = new Item(&exit_tile, *eject_list.back());
+        item->fakeMoveFrom(direction);
         eject_list.pop_back();
     }
 }

@@ -8,7 +8,7 @@
 class Factory : public Building
 {
 public:
-    Factory(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal);
+    Factory(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal, const ItemType& type);
 
     virtual void onUpdate(float delta) override;
     virtual bool accepts(ItemType& type) override;
@@ -21,7 +21,6 @@ private:
     int getInventoryCount(ItemType* type);
     int removeInventory(ItemType* type, int amount);
 
-    std::vector<const Recipe*> recipe_list;
     std::vector<ItemType*> eject_list;
     class Inventory
     {

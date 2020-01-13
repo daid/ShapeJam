@@ -14,7 +14,7 @@ Belt::Belt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal)
 
 void Belt::onUpdate(float delta)
 {
-    if (corner_tile->item)
+    if (corner_tile->item && !corner_tile->item->isMoving() && corner_tile->getTile(direction).building)
     {
         corner_tile->item->requestMove(direction);
     }
@@ -42,7 +42,8 @@ void Splitter::onUpdate(float delta)
             case Direction::Left: d = Direction::Right; break;
             }
         }
-        corner_tile->item->requestMove(d);
+        if (corner_tile->getTile(d).building)
+            corner_tile->item->requestMove(d);
         flip = !flip;
     }
 }

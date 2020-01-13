@@ -1,28 +1,71 @@
 [1] {
+    label: Black Circle
     texture: 1.png
 }
 [2] {
+    label: Blue Circle
     texture: 2.png
 }
-[3] {
-    texture: 3.png
-}
 [SQUARE2] {
+    label: Blue Square
     texture: square2.png
 }
+[TRIANGLE2] {
+    label: Blue Triangle
+    texture: triangle2.png
+}
+[3] {
+    label: Orange Circle
+    texture: 3.png
+}
+[SQUARE3] {
+    label: Orange Square
+    texture: square3.png
+}
+[LINE3] {
+    label: Orange Line
+    texture: line3.png
+}
+
+[SQUARE2LINE3] {
+    label: Orange Lines On Blue Square
+    texture: square2line3.png
+}
+
 [MINER] {
+    label: Miner
     texture: miner.png
     building: miner
+    size: 2, 2
 }
 [BELT] {
+    label: Belt
     texture: belt.png
     building: belt
 }
 [SPLITTER] {
+    label: Splitter
     texture: splitter.png
     building: splitter
 }
+[SHAPER] {
+    label: Shaper
+    texture: shaper.png
+    building: factory
+    recipes: SQUARE2 SQUARE3
+    size: 2, 2
+}
+[CUT_FACTORY] {
+    label: Cutting Factory
+    texture: cut_factory.png
+    building: factory
+    recipes: TRIANGLE2 LINE3
+    size: 2, 2
+}
 [FACTORY] {
+    label: Basic Factory
     texture: factory.png
     building: factory
+    recipes: SQUARE2LINE3
+    size: 2, 2
 }

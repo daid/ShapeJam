@@ -1,0 +1,13 @@
+{
+    texture: building/shaper.png
+    size: 2, 2
+    frame_size: 64, 64
+    [IDLE] {
+        frames: 0
+    }
+    [ACTIVE] {
+        frames: 1, 2, 3, 2
+        delay: 0.2
+        loop: true
+    }
+}

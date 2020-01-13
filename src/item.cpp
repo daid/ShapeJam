@@ -24,6 +24,21 @@ bool Item::isMoving()
     return move_timer.isRunning();
 }
 
+void Item::fakeMoveFrom(Direction direction)
+{
+    Tile* t = nullptr;
+    switch(direction)
+    {
+    case Direction::Forward: t = &tile->getTile(Direction::Backward); break;
+    case Direction::Backward: t = &tile->getTile(Direction::Forward); break;
+    case Direction::Right: t = &tile->getTile(Direction::Left); break;
+    case Direction::Left: t = &tile->getTile(Direction::Right); break;
+    }
+    move_timer.start(0.5);
+    old_position = t->position + t->side.up * 0.5;
+    new_position = tile->position + tile->side.up * 0.5;
+}
+
 bool Item::requestMove(Direction direction)
 {
     if (move_timer.isRunning())

@@ -8,6 +8,34 @@
         match_content_size: true
         padding: 5
     }
+    
+    [INFO_PANEL] {
+        type: panel
+        visible: false
+        alignment: topright
+        layout: vertical
+        padding: 5
+        margin: 0, 20
+        match_content_size: true
+        {
+            type: label
+            caption: INFO
+            size: 100, 20
+            alignment: center
+        }
+        [NAME] {
+            type: label
+            caption: Name of building
+            size: 100, 20
+            text.size: 10
+            alignment: center
+        }
+        [RECIPES] {
+            match_content_size: true
+            layout: vertical
+            #fill with RECIPE_BOX
+        }
+    }
 }
 
 [INVENTORY_ROW] {
@@ -30,5 +58,53 @@
         text.size: 8
         margin: 1
         order: 1
+    }
+}
+
+[RECIPE_BOX] {
+    type: panel
+    layout: horizontal
+    match_content_size: true
+    padding: 5
+    [INPUT] {
+        layout: vertical
+        match_content_size: true
+        alignment: center
+        #fill with RECIPE_ITEM
+    }
+    {
+        type: label
+        caption: ->
+        alignment: center
+        size: 40, 20
+    }
+    [OUTPUT] {
+        layout: vertical
+        match_content_size: true
+        alignment: center
+        #fill with RECIPE_ITEM
+    }
+}
+
+[RECIPE_ITEM] {
+    layout: horizontal
+    match_content_size: true
+    [BACKGROUND] {
+        type: image
+        size: 20, 20
+        image: gui/theme/pixel.png
+        color: #404040
+        margin: 2
+        [IMAGE] {
+            type: image
+            size: 20, 20
+        }
+    }
+    [AMOUNT] {
+        type: label
+        caption: x10
+        text.size: 10
+        text.alignment: bottom
+        size: 20, 20
     }
 }

@@ -4,12 +4,12 @@
 
 #include <sp2/graphics/spriteAnimation.h>
 
-Miner::Miner(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal)
-: Building(world, position, normal, sp::Vector2i(2, 2))
+Miner::Miner(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal, const ItemType& type)
+: Building(world, position, normal, type.size)
 {
     mine_timer.repeat(5.0);
 
-    setAnimation(sp::SpriteAnimation::load("building/miner.txt"));
+    setAnimation(sp::SpriteAnimation::load("building/" + type.name.lower() + ".txt"));
     animationPlay("ACTIVE");
 }
 

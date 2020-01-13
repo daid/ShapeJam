@@ -21,6 +21,7 @@ Scene::Scene()
 {
     ItemType::init();
     Recipe::init();
+    ItemType::initRecipes();
 
     camera_view_target = new sp::Node(getRoot());
     sp::P<sp::Camera> camera = new sp::Camera(camera_view_target);
@@ -57,6 +58,8 @@ Scene::Scene()
     addInventory(ItemType::get("MINER"), 10);
     addInventory(ItemType::get("BELT"), 100);
     addInventory(ItemType::get("SPLITTER"), 10);
+    addInventory(ItemType::get("SHAPER"), 10);
+    addInventory(ItemType::get("CUT_FACTORY"), 10);
     addInventory(ItemType::get("FACTORY"), 10);
 }
 
@@ -129,11 +132,12 @@ void Scene::onPointerUp(sp::Ray3d ray, int id)
                     }
                 }
 
-                if (tile.building)
+                if (tile.building && selected_building == tile.building)
                 {
                     tile.building->userRotate();
                     new_placement_direction = tile.building->getDirection();
                 }
+                setSelection(tile.building);
             }
             return false;
         });
@@ -200,6 +204,47 @@ void Scene::stopPickup()
 {
     pickup_indicator.destroy();
     pickup_timer.stop();
+}
+
+void Scene::setSelection(sp::P<Building> building)
+{
+    selected_building = building;
+    selection_indicator.destroy();
+    if (!building)
+    {
+        gui->getWidgetWithID("INFO_PANEL")->hide();
+        return;
+    }
+    sp::P<sp::gui::Widget> info = gui->getWidgetWithID("INFO_PANEL");
+    info->show();
+    info->getWidgetWithID("NAME")->setAttribute("caption", building->placed_from_type->label);
+    while(!info->getWidgetWithID("RECIPES")->getChildren().empty())
+        delete **info->getWidgetWithID("RECIPES")->getChildren().begin();
+
+    for(auto recipe : building->placed_from_type->recipes)
+    {
+        sp::P<sp::gui::Widget> recipe_box = sp::gui::Loader::load("gui/hud.gui", "RECIPE_BOX", info->getWidgetWithID("RECIPES"));
+        for(auto input : recipe->input)
+        {
+            sp::P<sp::gui::Widget> recipe_item = sp::gui::Loader::load("gui/hud.gui", "RECIPE_ITEM", recipe_box->getWidgetWithID("INPUT"));
+            recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", input.first.texture);
+            recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(input.second));
+        }
+        for(auto output : recipe->output)
+        {
+            sp::P<sp::gui::Widget> recipe_item = sp::gui::Loader::load("gui/hud.gui", "RECIPE_ITEM", recipe_box->getWidgetWithID("OUTPUT"));
+            recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", output.first.texture);
+            recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(output.second));
+        }
+    }
+
+    selection_indicator = new sp::Node(selected_building);
+    selection_indicator->setPosition(sp::Vector3d(0, 0, -0.05));
+    selection_indicator->render_data.type = sp::RenderData::Type::Additive;
+    selection_indicator->render_data.shader = sp::Shader::get("internal:color.shader");
+    selection_indicator->render_data.texture = sp::texture_manager.get("gui/theme/pixel.png");
+    selection_indicator->render_data.mesh = sp::MeshData::createDoubleSidedQuad(sp::Vector2f(selected_building->getSize()) + sp::Vector2f(0.2, 0.2));
+    selection_indicator->render_data.color = sp::Color(0.4, 0.8, 0.4);
 }
 
 Tile* Scene::getTileFromRay(sp::Ray3d ray)

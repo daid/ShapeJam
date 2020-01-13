@@ -10,6 +10,7 @@ class Item : public sp::Node
 public:
     Item(Tile* tile, ItemType& type);
 
+    void fakeMoveFrom(Direction direction);
     bool requestMove(Direction direction);
     bool isMoving();
 

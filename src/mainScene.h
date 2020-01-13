@@ -25,6 +25,8 @@ private:
     void startPickup(Tile* tile);
     void stopPickup();
 
+    void setSelection(sp::P<Building> building);
+
     bool allow_rotate = false;
     enum class PointerAction
     {
@@ -52,6 +54,9 @@ private:
     sp::Timer pickup_timer;
     Tile* pickup_tile;
     sp::P<sp::Node> pickup_indicator;
+
+    sp::P<Building> selected_building;
+    sp::P<sp::Node> selection_indicator;
 };
 
 #endif//MAIN_SCENE_H
