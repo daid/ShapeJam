@@ -239,9 +239,12 @@ void Scene::setSelection(sp::P<Building> building)
             recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", output.first.texture);
             recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(output.second));
         }
+        if (selected_building->getRecipe() == recipe)
+            recipe_box->setAttribute("theme_data", "button.selected");
         recipe_box->setEventCallback([this, recipe](sp::Variant v)
         {
             selected_building->setRecipe(recipe);
+            setSelection(selected_building);
         });
     }
 
