@@ -1,21 +1,21 @@
 [SQUARE2] {
-    time: 11
+    time: 6
     [INPUT] {
         1: 1
-        2: 5
+        2: 3
     }
     [OUTPUT] {
-        SQUARE2: 5
+        SQUARE2: 3
     }
 }
 [SQUARE3] {
-    time: 12
+    time: 6
     [INPUT] {
         1: 1
-        3: 5
+        3: 3
     }
     [OUTPUT] {
-        SQUARE3: 5
+        SQUARE3: 3
     }
 }
 

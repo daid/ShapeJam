@@ -33,6 +33,43 @@
             #fill with RECIPE_BOX
         }
     }
+    
+    [MESSAGE_BOX] {
+        type: panel
+        visible: false
+        alignment: top
+        padding: 5
+        layout: vertical
+        [MESSAGE] {
+            type: label
+            size: 300, 40
+            word_wrap: true
+            text.size: 10
+            text.alignment: topleft
+            scale_to_text: true
+            caption: 1234
+        }
+        [MESSAGE_BUTTON] {
+            type: button
+            size: 100, 20
+            caption: Ok
+            text.size: 15
+            alignment: right
+        }
+    }
+    [OBJECTIVE_BOX] {
+        type: panel
+        visible: false
+        layout: vertical
+        alignment: bottomleft
+        padding: 5
+        {
+            type: label
+            caption: Collect 5x [Black Circle]
+            scale_to_text: true
+            text.size: 15
+        }
+    }
 }
 
 [INVENTORY_ROW] {

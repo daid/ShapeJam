@@ -12,6 +12,7 @@ class Scene : public sp::Scene
 {
 public:
     Scene();
+    ~Scene();
 
     virtual bool onPointerDown(sp::io::Pointer::Button button, sp::Ray3d ray, int id) override;
     virtual void onPointerDrag(sp::Ray3d ray, int id) override;

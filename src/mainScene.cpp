@@ -48,8 +48,15 @@ Scene::Scene()
         {
             for(auto& inv : inventory)
                 inv.widget->setAttribute("theme_data", "button");
-            inventory[n].widget->setAttribute("theme_data", "button.selected");
-            selected_inventory_index = n;
+            if (selected_inventory_index == n)
+            {
+                selected_inventory_index = -1;
+            }
+            else
+            {
+                inventory[n].widget->setAttribute("theme_data", "button.selected");
+                selected_inventory_index = n;
+            }
         });
     }
 
@@ -63,6 +70,11 @@ Scene::Scene()
     addInventory(ItemType::get("SHAPER"), 10);
     addInventory(ItemType::get("CUT_FACTORY"), 10);
     addInventory(ItemType::get("FACTORY"), 10);
+}
+
+Scene::~Scene()
+{
+    gui.destroy();
 }
 
 bool Scene::onPointerDown(sp::io::Pointer::Button button, sp::Ray3d ray, int id)

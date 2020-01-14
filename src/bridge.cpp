@@ -48,7 +48,7 @@ void Bridge::onUpdate(float delta)
         {
             corner_tile->item->requestMoveUpBridge(direction);
         }
-        else
+        else if (corner_tile->getTile(direction).building)
         {
             corner_tile->item->requestMove(direction);
         }
@@ -66,7 +66,7 @@ void Bridge::tryToConnect()
         sp::P<Bridge> other = t->building;
         if (other)
         {
-            if (other->direction == direction)
+            if (other->direction == direction && !other->other_side)
             {
                 connect(other);
                 return;
@@ -85,7 +85,7 @@ void Bridge::tryToConnect()
         sp::P<Bridge> other = t->building;
         if (other)
         {
-            if (other->direction == direction)
+            if (other->direction == direction && !other->other_side)
                 other->connect(this);
             return;
         }
@@ -144,6 +144,8 @@ BridgeNode::BridgeNode(sp::P<Bridge> owner, Tile* tile)
     setAnimation(sp::SpriteAnimation::load("building/belt.txt"));
     animationPlay("BRIDGE");
     setPosition(tile->position + tile->side.up);
+
+    render_data.type = sp::RenderData::Type::Transparent;
 }
 
 BridgeNode::~BridgeNode()
