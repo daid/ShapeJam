@@ -85,8 +85,14 @@
 [SPLITTER] {
     time: 1
     [INPUT] {
-        SQUARE2: 5
-        TRIANGLE2: 5
-        SQUARE2LINE3: 1
+        BELT: 2
+        SQUARE2LINE3: 5
+    }
+}
+[BRIDGE] {
+    time: 1
+    [INPUT] {
+        SQUARE2: 10
+        BELT: 5
     }
 }

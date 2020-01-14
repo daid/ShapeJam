@@ -5,7 +5,6 @@
         type: panel
         alignment: left
         layout: horizontal
-        match_content_size: true
         padding: 5
     }
     
@@ -16,7 +15,6 @@
         layout: vertical
         padding: 5
         margin: 0, 20
-        match_content_size: true
         {
             type: label
             caption: INFO
@@ -31,7 +29,6 @@
             alignment: center
         }
         [RECIPES] {
-            match_content_size: true
             layout: vertical
             #fill with RECIPE_BOX
         }
@@ -40,7 +37,6 @@
 
 [INVENTORY_ROW] {
     layout: vertical
-    match_content_size: true
 }
 
 [INVENTORY_BUTTON] {
@@ -64,11 +60,9 @@
 [RECIPE_BOX] {
     type: button
     layout: horizontal
-    match_content_size: true
     margin: 5
     [INPUT] {
         layout: vertical
-        match_content_size: true
         alignment: center
         #fill with RECIPE_ITEM
     }
@@ -80,7 +74,6 @@
     }
     [OUTPUT] {
         layout: vertical
-        match_content_size: true
         alignment: center
         #fill with RECIPE_ITEM
     }
@@ -88,7 +81,6 @@
 
 [RECIPE_ITEM] {
     layout: horizontal
-    match_content_size: true
     [BACKGROUND] {
         type: image
         size: 20, 20

@@ -21,6 +21,7 @@ public:
         Miner,
         Belt,
         Splitter,
+        Bridge,
         Factory
     } building_type = BuildingType::None;
     std::vector<const Recipe*> recipes;

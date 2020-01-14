@@ -12,6 +12,7 @@ public:
 
     void fakeMoveFrom(Direction direction);
     bool requestMove(Direction direction);
+    bool requestMoveUpBridge(Direction direction);
     bool isMoving();
 
     ItemType& getType() { return type; }
@@ -23,4 +24,5 @@ private:
     sp::Timer move_timer;
     sp::Vector3d old_position;
     sp::Vector3d new_position;
+    bool on_bridge = false;
 };

@@ -48,6 +48,11 @@
     texture: splitter.png
     building: splitter
 }
+[BRIDGE] {
+    label: Bridge
+    texture: bridge.png
+    building: bridge
+}
 [SHAPER] {
     label: Shaper
     texture: shaper.png

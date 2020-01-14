@@ -6,6 +6,7 @@
 #include "miner.h"
 #include "belt.h"
 #include "factory.h"
+#include "bridge.h"
 
 #include <sp2/io/keyValueTreeLoader.h>
 
@@ -20,22 +21,25 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
     case BuildingType::None:
         break;
     case BuildingType::Miner:
-        building = new Miner(world, position, normal, *this);
+        building = new Miner(world, *this);
         break;
     case BuildingType::Belt:
-        building = new Belt(world, position, normal);
+        building = new Belt(world);
         break;
     case BuildingType::Splitter:
-        building = new Splitter(world, position, normal);
+        building = new Splitter(world);
+        break;
+    case BuildingType::Bridge:
+        building = new Bridge(world);
         break;
     case BuildingType::Factory:
-        building = new Factory(world, position, normal, *this);
+        building = new Factory(world, *this);
         break;
     }
 
     if (building)
     {
-        if (!building->isPlaced())
+        if (!building->placeAt(world, position, normal))
         {
             building.destroy();
             return nullptr;
@@ -47,7 +51,7 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
     Tile& tile = world->getTileAt(position, normal);
     if (tile.item)
         return nullptr;
-    if (tile.building && !tile.building->accepts(*this))
+    if (tile.building && !tile.building->accepts(*this, Direction::Forward))
         return nullptr;
     return new Item(&tile, *this);
 }
@@ -78,6 +82,8 @@ void ItemType::init()
             entry->building_type = BuildingType::Splitter;
         if (info.second["building"].lower() == "factory")
             entry->building_type = BuildingType::Factory;
+        if (info.second["building"].lower() == "bridge")
+            entry->building_type = BuildingType::Bridge;
         items[info.first] = std::move(entry);
     }
 }

@@ -4,8 +4,16 @@
 #include <sp2/graphics/meshdata.h>
 #include <sp2/assert.h>
 
-Building::Building(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal, sp::Vector2i size)
+Building::Building(sp::P<World> world, sp::Vector2i size)
 : sp::Node(world), size(size)
+{
+}
+
+Building::~Building()
+{
+}
+
+bool Building::placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal)
 {
     WorldSide& side = world->getSideAt(normal);
     position -= side.right * ((size.x - 1) * 0.5);
@@ -20,7 +28,9 @@ Building::Building(sp::P<World> world, sp::Vector3d position, sp::Vector3d norma
             sp::Vector3d p = tile.position + side.right * double(x) + side.forward * double(y);
             Tile& t = side.getTileAt(p);
             if (t.building || (p - t.position).length() > 0.7)
-                return;
+                return false;
+            if (t.bridge && !canBeBridged())
+                return false;
             //TODO: Placing a building on an item is generally not proper, but could be acceptable for belts
             //if (t.item)
             //    return;
@@ -37,15 +47,7 @@ Building::Building(sp::P<World> world, sp::Vector3d position, sp::Vector3d norma
 
     setPosition(tile.position + side.up * 0.1 + side.right * ((size.x - 1) * 0.5) + side.forward * ((size.y - 1) * 0.5));
     setRotation(side.rotation);
-
-    render_data.type = sp::RenderData::Type::Normal;
-    render_data.shader = sp::Shader::get("internal:basic_shaded.shader");
-    render_data.mesh = sp::MeshData::createQuad(sp::Vector2f(size));
-    placed = true;
-}
-
-Building::~Building()
-{
+    return true;
 }
 
 Tile& Building::getTile(sp::Vector2i offset)

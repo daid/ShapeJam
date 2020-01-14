@@ -10,8 +10,10 @@ enum class Direction
     Left,
     Right
 };
+Direction flipDirection(Direction d);
 
 class Building;
+class BridgeNode;
 class Item;
 class ItemType;
 class World;
@@ -23,6 +25,7 @@ public:
     sp::Vector3d position;
     int ground_type;
     sp::P<Building> building;
+    sp::P<BridgeNode> bridge;
     sp::P<Item> item;
 
     Tile& getTile(Direction direction);

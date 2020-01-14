@@ -32,14 +32,15 @@ Scene::Scene()
     //new TwitchTest(getRoot());
     sp::P<World> world = new World(getRoot());
 
-    gui = sp::gui::Loader::load("gui/hud.gui", "HUD");
+    sp::gui::Loader gui_loader("gui/hud.gui");
+    gui = gui_loader.create("HUD");
 
-    sp::P<sp::gui::Widget> row = sp::gui::Loader::load("gui/hud.gui", "INVENTORY_ROW", gui->getWidgetWithID("INVENTORY"));
+    sp::P<sp::gui::Widget> row = gui_loader.create("INVENTORY_ROW", gui->getWidgetWithID("INVENTORY"));
     for(size_t n=0; n<inventory.size(); n++)
     {
         if (n == inventory.size() / 2)
-            row = sp::gui::Loader::load("gui/hud.gui", "INVENTORY_ROW", gui->getWidgetWithID("INVENTORY"));
-        inventory[n].widget = sp::gui::Loader::load("gui/hud.gui", "INVENTORY_BUTTON", row);
+            row = gui_loader.create("INVENTORY_ROW", gui->getWidgetWithID("INVENTORY"));
+        inventory[n].widget = gui_loader.create("INVENTORY_BUTTON", row);
         inventory[n].type = nullptr;
         inventory[n].amount = 0;
 
@@ -58,6 +59,7 @@ Scene::Scene()
     addInventory(ItemType::get("MINER"), 10);
     addInventory(ItemType::get("BELT"), 100);
     addInventory(ItemType::get("SPLITTER"), 10);
+    addInventory(ItemType::get("BRIDGE"), 10);
     addInventory(ItemType::get("SHAPER"), 10);
     addInventory(ItemType::get("CUT_FACTORY"), 10);
     addInventory(ItemType::get("FACTORY"), 10);
@@ -127,6 +129,7 @@ void Scene::onPointerUp(sp::Ray3d ray, int id)
                             if (building)
                                 building->setDirection(new_placement_direction);
                             removeInventory(*inv.type, 1);
+                            setSelection(building);
                             return false;
                         }
                     }
@@ -223,19 +226,21 @@ void Scene::setSelection(sp::P<Building> building)
     info->getWidgetWithID("NAME")->setAttribute("caption", building->placed_from_type->label);
     while(!info->getWidgetWithID("RECIPES")->getChildren().empty())
         delete **info->getWidgetWithID("RECIPES")->getChildren().begin();
+    info->getWidgetWithID("RECIPES")->setSize(0, 0);
 
+    sp::gui::Loader gui_loader("gui/hud.gui");
     for(auto recipe : building->placed_from_type->recipes)
     {
-        sp::P<sp::gui::Widget> recipe_box = sp::gui::Loader::load("gui/hud.gui", "RECIPE_BOX", info->getWidgetWithID("RECIPES"));
+        sp::P<sp::gui::Widget> recipe_box = gui_loader.create("RECIPE_BOX", info->getWidgetWithID("RECIPES"));
         for(auto input : recipe->input)
         {
-            sp::P<sp::gui::Widget> recipe_item = sp::gui::Loader::load("gui/hud.gui", "RECIPE_ITEM", recipe_box->getWidgetWithID("INPUT"));
+            sp::P<sp::gui::Widget> recipe_item = gui_loader.create("RECIPE_ITEM", recipe_box->getWidgetWithID("INPUT"));
             recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", input.first.texture);
             recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(input.second));
         }
         for(auto output : recipe->output)
         {
-            sp::P<sp::gui::Widget> recipe_item = sp::gui::Loader::load("gui/hud.gui", "RECIPE_ITEM", recipe_box->getWidgetWithID("OUTPUT"));
+            sp::P<sp::gui::Widget> recipe_item = gui_loader.create("RECIPE_ITEM", recipe_box->getWidgetWithID("OUTPUT"));
             recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", output.first.texture);
             recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(output.second));
         }

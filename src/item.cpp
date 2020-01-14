@@ -1,5 +1,6 @@
 #include "item.h"
 #include "building.h"
+#include "bridge.h"
 
 #include <sp2/assert.h>
 #include <sp2/tween.h>
@@ -47,16 +48,53 @@ bool Item::requestMove(Direction direction)
 
     if (t.item)
         return false;
-    if (t.building && !t.building->accepts(type))
+    if (t.building && !t.building->accepts(type, direction))
         return false;
 
-    tile->item = nullptr;
+    if (on_bridge)
+        tile->bridge->item = nullptr;
+    else
+        tile->item = nullptr;
     tile = &t;
     tile->item = this;
 
     move_timer.start(0.25);
     old_position = getPosition3D();
     new_position = tile->position + tile->side.up * 0.5;
+    return true;
+}
+
+bool Item::requestMoveUpBridge(Direction direction)
+{
+    if (move_timer.isRunning())
+        return false;
+    Tile& t = tile->getTile(direction);
+
+    if (t.bridge && t.bridge->item)
+        return false;
+    if (!t.bridge && t.item)
+        return false;
+
+    if (on_bridge)
+        tile->bridge->item = nullptr;
+    else
+        tile->item = nullptr;
+    tile = &t;
+    if (tile->bridge)
+    {
+        tile->bridge->item = this;
+        on_bridge = true;
+        new_position = tile->position + tile->side.up * 1.5;
+    }
+    else
+    {
+        tile->item = this;
+        on_bridge = false;
+        new_position = tile->position + tile->side.up * 0.5;
+    }
+
+    move_timer.start(0.25);
+    old_position = getPosition3D();
     return true;
 }
 

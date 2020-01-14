@@ -138,3 +138,15 @@ Tile& World::getTileAt(sp::Vector3d position, sp::Vector3d normal)
 {
     return getSideAt(normal).getTileAt(position);
 }
+
+Direction flipDirection(Direction d)
+{
+    switch(d)
+    {
+    case Direction::Forward: return Direction::Backward;
+    case Direction::Backward: return Direction::Forward;
+    case Direction::Right: return Direction::Left;
+    case Direction::Left: return Direction::Right;
+    }
+    return Direction::Forward;
+}

@@ -5,8 +5,8 @@
 #include <sp2/graphics/spriteAnimation.h>
 
 
-Factory::Factory(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal, const ItemType& type)
-: Building(world, position, normal, type.size)
+Factory::Factory(sp::P<World> world, const ItemType& type)
+: Building(world, type.size)
 {
     setAnimation(sp::SpriteAnimation::load("building/" + type.name.lower() + ".txt"));
     animationPlay("IDLE");
@@ -126,7 +126,7 @@ void Factory::ejecting()
     }
 }
 
-bool Factory::accepts(ItemType& type)
+bool Factory::accepts(ItemType& type, Direction direction)
 {
     if (creating || eject_list.size() > 0)
         return false;

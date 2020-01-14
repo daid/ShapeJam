@@ -8,4 +8,7 @@
     [SPLITTER] {
         frames: 1
     }
+    [BRIDGE] {
+        frames: 2
+    }
 }

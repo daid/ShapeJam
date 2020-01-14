@@ -8,10 +8,10 @@
 class Factory : public Building
 {
 public:
-    Factory(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal, const ItemType& type);
+    Factory(sp::P<World> world, const ItemType& type);
 
     virtual void onUpdate(float delta) override;
-    virtual bool accepts(ItemType& type) override;
+    virtual bool accepts(ItemType& type, Direction direction) override;
 
     virtual void setRecipe(const Recipe* recipe) override;
     virtual const Recipe* getRecipe() override { return selected_recipe; }

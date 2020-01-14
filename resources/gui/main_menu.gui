@@ -12,7 +12,6 @@
     {
         layout: vertical
         alignment: bottom
-        match_content_size: true
         
         [START] {
             @ref: MAIN_BUTTON
