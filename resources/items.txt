@@ -68,9 +68,9 @@
     size: 2, 2
 }
 [FACTORY] {
-    label: Basic Factory
+    label: Factory
     texture: factory.png
     building: factory
-    recipes: SQUARE2LINE3 MINER SHAPER CUT_FACTORY BELT SPLITTER
+    recipes: SQUARE2LINE3 MINER SHAPER CUT_FACTORY BELT SPLITTER BRIDGE FACTORY
     size: 2, 2
 }

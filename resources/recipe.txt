@@ -71,6 +71,7 @@
     time: 10
     [INPUT] {
         SQUARE2: 15
+        SQUARE2LINE3: 5
         TRIANGLE2: 5
     }
 }

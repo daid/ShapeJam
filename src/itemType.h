@@ -31,6 +31,8 @@ public:
     static void init();
     static void initRecipes();
     static const ItemType* get(const sp::string& name);
+    static sp::string translate(const sp::string& input);
 private:
     static std::unordered_map<sp::string, std::unique_ptr<ItemType>> items;
+    static std::map<sp::string, sp::string> translations;
 };

@@ -11,6 +11,8 @@
 #include <sp2/io/keyValueTreeLoader.h>
 
 std::unordered_map<sp::string, std::unique_ptr<ItemType>> ItemType::items;
+std::map<sp::string, sp::string> ItemType::translations;
+
 
 sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal) const
 {
@@ -84,6 +86,7 @@ void ItemType::init()
             entry->building_type = BuildingType::Factory;
         if (info.second["building"].lower() == "bridge")
             entry->building_type = BuildingType::Bridge;
+        translations[info.first] = entry->label;
         items[info.first] = std::move(entry);
     }
 }
@@ -96,8 +99,10 @@ void ItemType::initRecipes()
         {
             items[info.first]->recipes.clear();
             for(auto s : info.second["recipes"].split(" "))
-                items[info.first]->recipes.push_back(&Recipe::get(s));
+                items[info.first]->recipes.push_back(Recipe::get(s));
         }
+        if (Recipe::get(info.first) == nullptr)
+            LOG(Warning, "No recipe to create", info.first);
     }
 }
 
@@ -107,4 +112,9 @@ const ItemType* ItemType::get(const sp::string& name)
     if (it == items.end())
         return nullptr;
     return &*it->second;
+}
+
+sp::string ItemType::translate(const sp::string& input)
+{
+    return input.format(translations);
 }

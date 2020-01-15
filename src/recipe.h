@@ -11,7 +11,7 @@ public:
     std::vector<std::pair<const ItemType*, int>> output;
 
     static void init();
-    static Recipe& get(const sp::string& name);
+    static const Recipe* get(const sp::string& name);
 private:
     static std::unordered_map<sp::string, std::unique_ptr<Recipe>> items;
 };

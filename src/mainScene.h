@@ -3,6 +3,7 @@
 
 #include <sp2/scene/scene.h>
 #include <sp2/graphics/gui/widget/widget.h>
+#include <sp2/script/environment.h>
 #include <sp2/timer.h>
 
 #include "itemType.h"
@@ -18,9 +19,16 @@ public:
     virtual void onPointerDrag(sp::Ray3d ray, int id) override;
     virtual void onPointerUp(sp::Ray3d ray, int id) override;
     virtual void onUpdate(float delta) override;
+    virtual void onFixedUpdate() override;
 
     void addInventory(const ItemType* type, int amount);
+    int countInventory(const ItemType* type);
     int removeInventory(const ItemType* type, int amount);
+
+    void message(const sp::string& message);
+    void objective(const sp::string& message);
+    void setupMessageConfirm();
+    void enableRotation();
 private:
     Tile* getTileFromRay(sp::Ray3d ray);
     void startPickup(Tile* tile);
@@ -58,6 +66,13 @@ private:
 
     sp::P<Building> selected_building;
     sp::P<sp::Node> selection_indicator;
+
+    sp::P<sp::script::Environment> script_environment;
+    sp::script::CoroutinePtr script_coroutine;
+
+    sp::string script_message;
+    size_t script_message_length = 0;
+    bool script_blocked = false;
 };
 
 #endif//MAIN_SCENE_H

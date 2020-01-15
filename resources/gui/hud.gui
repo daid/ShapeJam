@@ -51,6 +51,7 @@
         }
         [MESSAGE_BUTTON] {
             type: button
+            visible: false
             size: 100, 20
             caption: Ok
             text.size: 15
@@ -63,7 +64,7 @@
         layout: vertical
         alignment: bottomleft
         padding: 5
-        {
+        [OBJECTIVE] {
             type: label
             caption: Collect 5x [Black Circle]
             scale_to_text: true
@@ -97,7 +98,7 @@
 [RECIPE_BOX] {
     type: button
     layout: horizontal
-    margin: 5
+    margin: 5, 2
     [INPUT] {
         layout: vertical
         alignment: center

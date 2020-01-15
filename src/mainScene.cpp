@@ -15,6 +15,53 @@
 #include "twitch.h"
 
 
+static int lua_Yield(lua_State* lua)
+{
+    return lua_yield(lua, 0);
+}
+
+static int lua_confirm(lua_State* lua)
+{
+    sp::P<Scene> scene = Scene::get("MAIN");
+    scene->setupMessageConfirm();
+    return lua_yield(lua, 0);
+}
+
+static void lua_addInventory(sp::string item, int amount)
+{
+    sp::P<Scene> scene = Scene::get("MAIN");
+    scene->addInventory(ItemType::get(item), amount);
+}
+
+static int lua_countInventory(sp::string item)
+{
+    sp::P<Scene> scene = Scene::get("MAIN");
+    return scene->countInventory(ItemType::get(item));
+}
+
+static int lua_removeInventory(sp::string item, int amount)
+{
+    sp::P<Scene> scene = Scene::get("MAIN");
+    return scene->removeInventory(ItemType::get(item), amount);
+}
+
+static void lua_message(sp::string msg)
+{
+    sp::P<Scene> scene = Scene::get("MAIN");
+    scene->message(msg);
+}
+
+static void lua_objective(sp::string msg)
+{
+    sp::P<Scene> scene = Scene::get("MAIN");
+    scene->objective(msg);
+}
+
+static void lua_enableRotation()
+{
+    sp::P<Scene> scene = Scene::get("MAIN");
+    scene->enableRotation();
+}
 
 Scene::Scene()
 : sp::Scene("MAIN")
@@ -59,22 +106,39 @@ Scene::Scene()
             }
         });
     }
+    gui->getWidgetWithID("MESSAGE_BUTTON")->setEventCallback([this](sp::Variant v)
+    {
+        if (script_message_length < script_message.length())
+        {
+            script_message_length = script_message.length();
+            gui->getWidgetWithID("MESSAGE")->setAttribute("caption", script_message);
+        }
+        else
+        {
+            script_blocked = false;
+            gui->getWidgetWithID("MESSAGE_BUTTON")->hide();
+            gui->getWidgetWithID("MESSAGE_BOX")->hide();
+        }
+    });
 
-    addInventory(ItemType::get("1"), 10);
-    addInventory(ItemType::get("2"), 10);
-    addInventory(ItemType::get("3"), 10);
-    addInventory(ItemType::get("MINER"), 10);
-    addInventory(ItemType::get("BELT"), 100);
-    addInventory(ItemType::get("SPLITTER"), 10);
-    addInventory(ItemType::get("BRIDGE"), 10);
-    addInventory(ItemType::get("SHAPER"), 10);
-    addInventory(ItemType::get("CUT_FACTORY"), 10);
-    addInventory(ItemType::get("FACTORY"), 10);
+    script_environment = new sp::script::Environment();
+    script_environment->load("scenario.lua");
+    script_environment->setGlobal("yield", lua_Yield);
+    script_environment->setGlobal("confirm", lua_confirm);
+    script_environment->setGlobal("message", lua_message);
+    script_environment->setGlobal("objective", lua_objective);
+    script_environment->setGlobal("addInventory", lua_addInventory);
+    script_environment->setGlobal("countInventory", lua_countInventory);
+    script_environment->setGlobal("removeInventory", lua_removeInventory);
+    script_environment->setGlobal("enableRotation", lua_enableRotation);
+    script_coroutine = script_environment->callCoroutine("run");
 }
 
 Scene::~Scene()
 {
     gui.destroy();
+    script_coroutine = nullptr;
+    script_environment.destroy();
 }
 
 bool Scene::onPointerDown(sp::io::Pointer::Button button, sp::Ray3d ray, int id)
@@ -141,7 +205,7 @@ void Scene::onPointerUp(sp::Ray3d ray, int id)
                             if (building)
                                 building->setDirection(new_placement_direction);
                             removeInventory(inv.type, 1);
-                            setSelection(building);
+                            setSelection(tile.building);
                             return false;
                         }
                     }
@@ -195,6 +259,19 @@ void Scene::onUpdate(float delta)
             pickup_indicator.destroy();
             startPickup(pickup_tile);
         }
+    }
+}
+
+void Scene::onFixedUpdate()
+{
+    if (script_coroutine && !script_blocked && !script_coroutine->resume())
+        script_coroutine = nullptr;
+    
+    if (script_message_length < script_message.length())
+    {
+        script_message_length += 1;
+        gui->getWidgetWithID("MESSAGE_BOX")->show();
+        gui->getWidgetWithID("MESSAGE")->setAttribute("caption", script_message.substr(0, script_message_length));
     }
 }
 
@@ -316,6 +393,20 @@ void Scene::addInventory(const ItemType* type, int amount)
     }
 }
 
+int Scene::countInventory(const ItemType* type)
+{
+    if (!type)
+        return 0;
+    for(auto& entry : inventory)
+    {
+        if (entry.type == type)
+        {
+            return entry.amount;
+        }
+    }
+    return 0;
+}
+
 int Scene::removeInventory(const ItemType* type, int amount)
 {
     if (!type)
@@ -340,4 +431,38 @@ int Scene::removeInventory(const ItemType* type, int amount)
         }
     }
     return 0;
+}
+
+void Scene::message(const sp::string& msg)
+{
+    script_message = ItemType::translate(msg);
+    script_message_length = 0;
+    if (script_message == "")
+    {
+        gui->getWidgetWithID("MESSAGE_BOX")->hide();
+    }
+}
+
+void Scene::objective(const sp::string& message)
+{
+    if (message == "")
+    {
+        gui->getWidgetWithID("OBJECTIVE_BOX")->hide();
+    }
+    else
+    {
+        gui->getWidgetWithID("OBJECTIVE_BOX")->show();
+        gui->getWidgetWithID("OBJECTIVE")->setAttribute("caption", ItemType::translate(message));
+    }
+}
+
+void Scene::setupMessageConfirm()
+{
+    script_blocked = true;
+    gui->getWidgetWithID("MESSAGE_BUTTON")->show();
+}
+
+void Scene::enableRotation()
+{
+    allow_rotate = true;
 }

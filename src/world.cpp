@@ -76,9 +76,12 @@ World::World(sp::P<sp::Node> parent)
         int type;
     };
     std::vector<AreaDef> areas;
-    areas.push_back({.position = sp::Vector3f(2, 2, 16), .size = 5.0f, .type = 1});
-    areas.push_back({.position = sp::Vector3f(10, 14, 16), .size = 3.0f, .type = 2});
-    areas.push_back({.position = sp::Vector3f(16, 5, 14), .size = 2.5f, .type = 3});
+    areas.push_back({.position = sp::Vector3f(2, 2, 16), .size = 5.0f, .type = 3});
+    areas.push_back({.position = sp::Vector3f(10, 14, 16), .size = 3.0f, .type = 1});
+    areas.push_back({.position = sp::Vector3f(16, 4, 8), .size = 6.5f, .type = 2});
+    areas.push_back({.position = sp::Vector3f(16, 10, 5), .size = 2.5f, .type = 1});
+    areas.push_back({.position = sp::Vector3f(3, 15, 0), .size = 5.5f, .type = 3});
+    areas.push_back({.position = sp::Vector3f(0, 4, 1), .size = 3.5f, .type = 1});
 
     for(int x=0; x<size; x++)
     {

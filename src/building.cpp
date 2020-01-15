@@ -92,8 +92,8 @@ void Building::setDirection(Direction dir)
     switch(direction)
     {
     case Direction::Forward: setRotation(corner_tile->side.rotation); break;
-    case Direction::Backward: setRotation(sp::Quaterniond::fromAngle(180) * corner_tile->side.rotation); break;
-    case Direction::Right: setRotation(sp::Quaterniond::fromAngle(270) * corner_tile->side.rotation); break;
-    case Direction::Left: setRotation(sp::Quaterniond::fromAngle(90) * corner_tile->side.rotation); break;
+    case Direction::Backward: setRotation(corner_tile->side.rotation * sp::Quaterniond::fromAngle(180)); break;
+    case Direction::Right: setRotation(corner_tile->side.rotation * sp::Quaterniond::fromAngle(270)); break;
+    case Direction::Left: setRotation(corner_tile->side.rotation * sp::Quaterniond::fromAngle(90)); break;
     }
 }

@@ -33,8 +33,10 @@ void Recipe::init()
     }
 }
 
-Recipe& Recipe::get(const sp::string& name)
+const Recipe* Recipe::get(const sp::string& name)
 {
-    sp2assert(items.find(name) != items.end(), "Recipe not found");
-    return *items[name];
+    auto it = items.find(name);
+    if (it == items.end())
+        return nullptr;
+    return &*it->second;
 }

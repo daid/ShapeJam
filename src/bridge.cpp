@@ -13,6 +13,7 @@ Bridge::Bridge(sp::P<World> world)
     visual->animationPlay("BRIDGE");
     visual->setPosition(sp::Vector3d(0, 0, 0.5));
     visual->setRotation(sp::Quaterniond::fromAxisAngle(sp::Vector3d(1, 0, 0), 45));
+    visual->render_data.scale.y = 1.4;
 }
 
 Bridge::~Bridge()
