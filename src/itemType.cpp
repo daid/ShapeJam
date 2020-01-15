@@ -9,6 +9,7 @@
 #include "bridge.h"
 
 #include <sp2/io/keyValueTreeLoader.h>
+#include <sp2/audio/sound.h>
 
 std::unordered_map<sp::string, std::unique_ptr<ItemType>> ItemType::items;
 std::map<sp::string, sp::string> ItemType::translations;
@@ -47,6 +48,7 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
             return nullptr;
         }
         building->placed_from_type = this;
+        sp::audio::Sound::play("place.wav");
         return building;
     }
 

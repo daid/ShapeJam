@@ -5,7 +5,7 @@
         alignment: top
         type: label
         theme_data: menu_menu_title
-        caption: Game Title
+        caption: Manufacturing Mayhem
         scale_to_text: true
     }
 

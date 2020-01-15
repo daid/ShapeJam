@@ -11,6 +11,7 @@
 #include <sp2/graphics/textureManager.h>
 #include <sp2/collision/3d/box.h>
 #include <sp2/graphics/gui/loader.h>
+#include <sp2/audio/sound.h>
 
 #include "twitch.h"
 
@@ -242,6 +243,7 @@ void Scene::onUpdate(float delta)
 
         if (pickup_timer.isExpired())
         {
+            sp::audio::Sound::play("pickup.wav");
             if (pickup_tile->item)
             {
                 addInventory(pickup_tile->item->getType(), 1);

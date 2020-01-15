@@ -67,4 +67,5 @@ function run()
     confirm()
     message("That is it for now. Have fun, and get your production stats up!")
     confirm()
+    objective("Create 500x [{SQUARE2LINE3}]")
 end

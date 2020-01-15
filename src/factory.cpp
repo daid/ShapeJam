@@ -3,6 +3,7 @@
 #include "item.h"
 
 #include <sp2/graphics/spriteAnimation.h>
+#include <sp2/audio/sound.h>
 
 
 Factory::Factory(sp::P<World> world, const ItemType* type)
@@ -122,6 +123,7 @@ void Factory::ejecting()
     {
         Item* item = new Item(&exit_tile, eject_list.back());
         item->fakeMoveFrom(direction);
+        sp::audio::Sound::play("craft.wav");
         eject_list.pop_back();
     }
 }

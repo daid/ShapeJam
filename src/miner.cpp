@@ -3,6 +3,7 @@
 #include "item.h"
 
 #include <sp2/graphics/spriteAnimation.h>
+#include <sp2/audio/sound.h>
 
 Miner::Miner(sp::P<World> world, const ItemType* type)
 : Building(world, type->size)
@@ -34,7 +35,13 @@ void Miner::onUpdate(float delta)
             {
                 sp::P<Item> item = new Item(&tile, mine_type);
                 if (!item->requestMove(direction))
+                {
                     item.destroy();
+                }
+                else
+                {
+                    sp::audio::Sound::play("craft.wav");
+                }
             }
         }
     }
