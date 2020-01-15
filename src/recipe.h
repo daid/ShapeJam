@@ -7,8 +7,8 @@ class Recipe
 public:
     sp::string name;
     float craft_time;
-    std::vector<std::pair<ItemType&, int>> input;
-    std::vector<std::pair<ItemType&, int>> output;
+    std::vector<std::pair<const ItemType*, int>> input;
+    std::vector<std::pair<const ItemType*, int>> output;
 
     static void init();
     static Recipe& get(const sp::string& name);

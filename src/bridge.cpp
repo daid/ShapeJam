@@ -27,7 +27,7 @@ void Bridge::userRotate()
     tryToConnect();
 }
 
-bool Bridge::accepts(ItemType& type, Direction direction)
+bool Bridge::accepts(const ItemType* type, Direction direction)
 {
     if (entrance && this->direction == direction)
         return true;

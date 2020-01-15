@@ -29,7 +29,7 @@ public:
     sp::P<Item> item;
 
     Tile& getTile(Direction direction);
-    ItemType* getMineType();
+    const ItemType* getMineType();
 };
 class WorldSide
 {

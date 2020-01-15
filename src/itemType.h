@@ -26,11 +26,11 @@ public:
     } building_type = BuildingType::None;
     std::vector<const Recipe*> recipes;
 
-    sp::P<sp::Node> placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal);
+    sp::P<sp::Node> placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal) const;
 
     static void init();
     static void initRecipes();
-    static ItemType& get(const sp::string& name);
+    static const ItemType* get(const sp::string& name);
 private:
     static std::unordered_map<sp::string, std::unique_ptr<ItemType>> items;
 };

@@ -19,8 +19,8 @@ public:
     virtual void onPointerUp(sp::Ray3d ray, int id) override;
     virtual void onUpdate(float delta) override;
 
-    void addInventory(ItemType& type, int amount);
-    int removeInventory(ItemType& type, int amount);
+    void addInventory(const ItemType* type, int amount);
+    int removeInventory(const ItemType* type, int amount);
 private:
     Tile* getTileFromRay(sp::Ray3d ray);
     void startPickup(Tile* tile);
@@ -46,7 +46,7 @@ private:
     {
     public:
         sp::P<sp::gui::Widget> widget;
-        ItemType* type;
+        const ItemType* type;
         int amount;
     };
     std::array<Inventory, 20> inventory;

@@ -20,14 +20,14 @@ Tile& Tile::getTile(Direction direction)
     return t;
 }
 
-ItemType* Tile::getMineType()
+const ItemType* Tile::getMineType()
 {
     if (ground_type == 1)
-        return &ItemType::get("1");
+        return ItemType::get("1");
     if (ground_type == 2)
-        return &ItemType::get("2");
+        return ItemType::get("2");
     if (ground_type == 3)
-        return &ItemType::get("3");
+        return ItemType::get("3");
     return nullptr;
 }
 

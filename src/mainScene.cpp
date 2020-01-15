@@ -48,7 +48,7 @@ Scene::Scene()
         {
             for(auto& inv : inventory)
                 inv.widget->setAttribute("theme_data", "button");
-            if (selected_inventory_index == n)
+            if (selected_inventory_index == int(n))
             {
                 selected_inventory_index = -1;
             }
@@ -140,7 +140,7 @@ void Scene::onPointerUp(sp::Ray3d ray, int id)
                             sp::P<Building> building = result;
                             if (building)
                                 building->setDirection(new_placement_direction);
-                            removeInventory(*inv.type, 1);
+                            removeInventory(inv.type, 1);
                             setSelection(building);
                             return false;
                         }
@@ -185,12 +185,12 @@ void Scene::onUpdate(float delta)
             }
             else if (pickup_tile->building)
             {
-                addInventory(*pickup_tile->building->placed_from_type, 1);
+                addInventory(pickup_tile->building->placed_from_type, 1);
                 pickup_tile->building.destroy();
             }
             else if (pickup_tile->getMineType())
             {
-                addInventory(*pickup_tile->getMineType(), 1);
+                addInventory(pickup_tile->getMineType(), 1);
             }
             pickup_indicator.destroy();
             startPickup(pickup_tile);
@@ -247,13 +247,13 @@ void Scene::setSelection(sp::P<Building> building)
         for(auto input : recipe->input)
         {
             sp::P<sp::gui::Widget> recipe_item = gui_loader.create("RECIPE_ITEM", recipe_box->getWidgetWithID("INPUT"));
-            recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", input.first.texture);
+            recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", input.first->texture);
             recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(input.second));
         }
         for(auto output : recipe->output)
         {
             sp::P<sp::gui::Widget> recipe_item = gui_loader.create("RECIPE_ITEM", recipe_box->getWidgetWithID("OUTPUT"));
-            recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", output.first.texture);
+            recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", output.first->texture);
             recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(output.second));
         }
         if (selected_building->getRecipe() == recipe)
@@ -289,11 +289,13 @@ Tile* Scene::getTileFromRay(sp::Ray3d ray)
     return result;
 }
 
-void Scene::addInventory(ItemType& type, int amount)
+void Scene::addInventory(const ItemType* type, int amount)
 {
+    if (!type)
+        return;
     for(auto& entry : inventory)
     {
-        if (entry.type == &type)
+        if (entry.type == type)
         {
             entry.amount += amount;
             entry.widget->getWidgetWithID("AMOUNT")->setAttribute("caption", sp::string(entry.amount));
@@ -305,20 +307,22 @@ void Scene::addInventory(ItemType& type, int amount)
     {
         if (entry.type == nullptr)
         {
-            entry.type = &type;
+            entry.type = type;
             entry.amount = amount;
-            entry.widget->getWidgetWithID("IMAGE")->setAttribute("image", type.texture);
+            entry.widget->getWidgetWithID("IMAGE")->setAttribute("image", type->texture);
             entry.widget->getWidgetWithID("AMOUNT")->setAttribute("caption", sp::string(entry.amount));
             return;
         }
     }
 }
 
-int Scene::removeInventory(ItemType& type, int amount)
+int Scene::removeInventory(const ItemType* type, int amount)
 {
+    if (!type)
+        return 0;
     for(auto& entry : inventory)
     {
-        if (entry.type == &type)
+        if (entry.type == type)
         {
             amount = std::min(entry.amount, amount);
             entry.amount -= amount;

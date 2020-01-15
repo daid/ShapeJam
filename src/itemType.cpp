@@ -12,7 +12,7 @@
 
 std::unordered_map<sp::string, std::unique_ptr<ItemType>> ItemType::items;
 
-sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal)
+sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal) const
 {
     sp::P<Building> building;
 
@@ -21,7 +21,7 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
     case BuildingType::None:
         break;
     case BuildingType::Miner:
-        building = new Miner(world, *this);
+        building = new Miner(world, this);
         break;
     case BuildingType::Belt:
         building = new Belt(world);
@@ -33,7 +33,7 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
         building = new Bridge(world);
         break;
     case BuildingType::Factory:
-        building = new Factory(world, *this);
+        building = new Factory(world, this);
         break;
     }
 
@@ -51,16 +51,16 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
     Tile& tile = world->getTileAt(position, normal);
     if (tile.item)
         return nullptr;
-    if (tile.building && !tile.building->accepts(*this, Direction::Forward))
+    if (tile.building && !tile.building->accepts(this, Direction::Forward))
         return nullptr;
-    return new Item(&tile, *this);
+    return new Item(&tile, this);
 }
 
 void ItemType::init()
 {
     if (!items.empty())
         return;
-    
+
     for(auto info : sp::io::KeyValueTreeLoader::load("items.txt")->getFlattenNodesByIds())
     {
         auto entry = std::unique_ptr<ItemType>(new ItemType());
@@ -101,7 +101,10 @@ void ItemType::initRecipes()
     }
 }
 
-ItemType& ItemType::get(const sp::string& name)
+const ItemType* ItemType::get(const sp::string& name)
 {
-    return *items[name];
+    auto it = items.find(name);
+    if (it == items.end())
+        return nullptr;
+    return &*it->second;
 }

@@ -7,7 +7,7 @@ class ItemType;
 class Miner : public Building
 {
 public:
-    Miner(sp::P<World> world, const ItemType& type);
+    Miner(sp::P<World> world, const ItemType* type);
 
     virtual void onUpdate(float delta) override;
 

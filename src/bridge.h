@@ -9,7 +9,7 @@ public:
     virtual ~Bridge();
 
     virtual void onUpdate(float delta) override;
-    virtual bool accepts(ItemType& type, Direction direction) override;
+    virtual bool accepts(const ItemType* type, Direction direction) override;
     virtual void userRotate() override;
 private:
     void tryToConnect();

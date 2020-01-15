@@ -5,20 +5,20 @@
 #include <sp2/graphics/spriteAnimation.h>
 
 
-Factory::Factory(sp::P<World> world, const ItemType& type)
-: Building(world, type.size)
+Factory::Factory(sp::P<World> world, const ItemType* type)
+: Building(world, type->size)
 {
-    setAnimation(sp::SpriteAnimation::load("building/" + type.name.lower() + ".txt"));
+    setAnimation(sp::SpriteAnimation::load("building/" + type->name.lower() + ".txt"));
     animationPlay("IDLE");
 
-    for(auto recipe : type.recipes)
+    for(auto recipe : type->recipes)
     {
         for(auto& it : recipe->input)
         {
             bool done = false;
             for(auto& inv : inventory)
             {
-                if (inv.type == &it.first)
+                if (inv.type == it.first)
                 {
                     inv.maximum = std::max(inv.maximum, it.second);
                     done = true;
@@ -26,7 +26,7 @@ Factory::Factory(sp::P<World> world, const ItemType& type)
             }
             if (!done)
             {
-                inventory.push_back({.type = &it.first, .amount = 0, .maximum = it.second});
+                inventory.push_back({.type = it.first, .amount = 0, .maximum = it.second});
             }
         }
     }
@@ -53,7 +53,7 @@ void Factory::idle()
             {
                 for(auto& inv : inventory)
                 {
-                    if (inv.type == &tile.item->getType() && inv.amount < inv.maximum)
+                    if (inv.type == tile.item->getType() && inv.amount < inv.maximum)
                     {
                         inv.amount += 1;
                         tile.item.destroy();
@@ -83,7 +83,7 @@ bool Factory::tryToMake(const Recipe* recipe)
     bool input_satisfied = true;
     for(auto& input : recipe->input)
     {
-        if (getInventoryCount(&input.first) < input.second)
+        if (getInventoryCount(input.first) < input.second)
         {
             input_satisfied = false;
             break;
@@ -93,7 +93,7 @@ bool Factory::tryToMake(const Recipe* recipe)
     {
         for(auto& input : recipe->input)
         {
-            removeInventory(&input.first, input.second);
+            removeInventory(input.first, input.second);
         }
         creating = recipe;
         animationPlay("ACTIVE");
@@ -109,7 +109,7 @@ void Factory::building()
     {
         animationPlay("IDLE");
         for(auto& output : creating->output)
-            eject_list.resize(eject_list.size() + output.second, &output.first);
+            eject_list.resize(eject_list.size() + output.second, output.first);
         creating = nullptr;
     }
 }
@@ -120,19 +120,19 @@ void Factory::ejecting()
 
     if (!exit_tile.item)
     {
-        Item* item = new Item(&exit_tile, *eject_list.back());
+        Item* item = new Item(&exit_tile, eject_list.back());
         item->fakeMoveFrom(direction);
         eject_list.pop_back();
     }
 }
 
-bool Factory::accepts(ItemType& type, Direction direction)
+bool Factory::accepts(const ItemType* type, Direction direction)
 {
     if (creating || eject_list.size() > 0)
         return false;
     for(auto& inv : inventory)
     {
-        if (inv.type == &type && inv.amount < inv.maximum)
+        if (inv.type == type && inv.amount < inv.maximum)
             return true;
     }
     return false;

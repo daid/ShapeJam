@@ -17,7 +17,7 @@ public:
     sp::Vector2i getSize() { return size; }
 
     bool placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal);
-    virtual bool accepts(ItemType& type, Direction direction) { return false; }
+    virtual bool accepts(const ItemType* type, Direction direction) { return false; }
     virtual bool canBeBridged() { return false; }
 
     virtual void userRotate();
@@ -27,7 +27,7 @@ public:
     virtual void setRecipe(const Recipe* recipe) {}
     virtual const Recipe* getRecipe() { return nullptr; }
 
-    ItemType* placed_from_type;
+    const ItemType* placed_from_type;
 protected:
     Tile& getTile(sp::Vector2i offset);
 

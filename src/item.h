@@ -8,18 +8,18 @@
 class Item : public sp::Node
 {
 public:
-    Item(Tile* tile, ItemType& type);
+    Item(Tile* tile, const ItemType* type);
 
     void fakeMoveFrom(Direction direction);
     bool requestMove(Direction direction);
     bool requestMoveUpBridge(Direction direction);
     bool isMoving();
 
-    ItemType& getType() { return type; }
+    const ItemType* getType() { return type; }
 
     virtual void onUpdate(float delta) override;
 private:
-    ItemType& type;
+    const ItemType* type;
     Tile* tile;
     sp::Timer move_timer;
     sp::Vector3d old_position;

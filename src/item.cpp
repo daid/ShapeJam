@@ -7,7 +7,7 @@
 #include <sp2/graphics/meshdata.h>
 #include <sp2/graphics/textureManager.h>
 
-Item::Item(Tile* tile, ItemType& type)
+Item::Item(Tile* tile, const ItemType* type)
 : sp::Node(&tile->side.world), type(type), tile(tile)
 {
     sp2assert(!tile->item, "Cannot spawn 2 items on same tile.");
@@ -15,7 +15,7 @@ Item::Item(Tile* tile, ItemType& type)
     render_data.type = sp::RenderData::Type::Normal;
     render_data.shader = sp::Shader::get("shader/billboard.shader");
     render_data.mesh = sp::MeshData::createQuad(sp::Vector2f(1, 1));
-    render_data.texture = sp::texture_manager.get(type.texture);
+    render_data.texture = sp::texture_manager.get(type->texture);
 
     setPosition(tile->position + tile->side.up * 0.5);
 }
