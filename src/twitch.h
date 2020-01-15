@@ -1,4 +1,5 @@
 #include <sp2/io/network/tcpSocket.h>
+#include <sp2/scene/node.h>
 
 class TwitchTest : public sp::Node
 {
