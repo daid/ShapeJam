@@ -65,6 +65,7 @@
             caption: Controls
             fill_width: true
             height: 40
+            visible: false
             
             [REBIND] {
                 type: button

@@ -91,15 +91,17 @@ static void openOptionsMenu()
         menu->getWidgetWithID("MUSIC_VOLUME")->getWidgetWithID("VALUE")->setAttribute("caption", sp::string(v.getInteger()) + "%");
         sp::audio::Music::setVolume(v.getInteger());
     });
+    /*
     menu->getWidgetWithID("REBIND")->setEventCallback([=](sp::Variant v) mutable {
         menu.destroy();
         openRebindMenu();
     });
+    */
     menu->getWidgetWithID("BACK")->setEventCallback([=](sp::Variant v) mutable {
         menu.destroy();
         openMainMenu();
     });
-
+    /*
     for(auto keybinding : controller.all)
     {
         sp::P<sp::gui::Widget> keybinding_menu = sp::gui::Loader::load("gui/main_menu.gui", "@OPTIONS_KEYBINDING", menu->getWidgetWithID("OPTIONS"));
@@ -109,6 +111,7 @@ static void openOptionsMenu()
         //    value += ", " + keybinding->getHumanReadableKeyName(n);
         keybinding_menu->getWidgetWithID("VALUE")->setAttribute("caption", value.strip());
     }
+     */
 }
 
 class Rebinder : public sp::Node
