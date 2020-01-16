@@ -2,6 +2,7 @@
 
 #include <sp2/scene/node.h>
 #include <sp2/scene/voxelmap.h>
+#include <array>
 
 enum class Direction
 {

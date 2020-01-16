@@ -83,6 +83,10 @@ void openMainMenu()
         menu->getWidgetWithID("TWITCH")->hide();
 #ifdef EMSCRIPTEN
     menu->getWidgetWithID("QUIT")->hide();
+    menu->getWidgetWithID("TWITCH")->hide();
+#endif
+#ifdef ANDROID
+    menu->getWidgetWithID("TWITCH")->hide();
 #endif
 }
 
