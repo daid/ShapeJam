@@ -4,6 +4,7 @@
 #include "recipe.h"
 #include "world.h"
 #include "building.h"
+#include "stats.h"
 
 #include <sp2/scene/camera.h>
 #include <sp2/scene/voxelmap.h>
@@ -120,6 +121,10 @@ Scene::Scene()
             gui->getWidgetWithID("MESSAGE_BUTTON")->hide();
             gui->getWidgetWithID("MESSAGE_BOX")->hide();
         }
+    });
+    gui->getWidgetWithID("STATS_BUTTON")->setEventCallback([this](sp::Variant v)
+    {
+        gui->getWidgetWithID("STATS_PANEL")->setVisible(!gui->getWidgetWithID("STATS_PANEL")->isVisible());
     });
 
     script_environment = new sp::script::Environment();
@@ -274,6 +279,16 @@ void Scene::onFixedUpdate()
         script_message_length += 1;
         gui->getWidgetWithID("MESSAGE_BOX")->show();
         gui->getWidgetWithID("MESSAGE")->setAttribute("caption", script_message.substr(0, script_message_length));
+    }
+
+    sp::P<sp::gui::Widget> stats_panel = gui->getWidgetWithID("STATS_PANEL");
+    if (stats_panel->isVisible())
+    {
+        for(sp::P<World> world : getRoot()->getChildren())
+        {
+            if (world)
+                world->stats->show(stats_panel->getWidgetWithID("STATS_CONTENTS"));
+        }
     }
 }
 

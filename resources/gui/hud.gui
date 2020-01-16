@@ -71,6 +71,53 @@
             text.size: 15
         }
     }
+    {
+        type: panel
+        padding: 5
+        [STATS_BUTTON] {
+            type: button
+            caption: Stats
+            alignment: topleft
+            size: 50, 20
+            text.size: 15
+        }
+    }
+    
+    [STATS_PANEL] {
+        type: panel
+        padding: 5
+        alignment: center
+        layout: vertical
+        visible: false
+        {
+            layout: horizontal
+            {
+                type: label
+                size: 20, 20
+            }
+            {
+                type: label
+                size: 100, 20
+                caption: Last second
+                text.size: 15
+            }
+            {
+                type: label
+                size: 100, 20
+                caption: Last minute
+                text.size: 15
+            }
+            {
+                type: label
+                size: 100, 20
+                caption: Last hour
+                text.size: 15
+            }
+        }
+        [STATS_CONTENTS] {
+            layout: vertical
+        }
+    }
 }
 
 [INVENTORY_ROW] {

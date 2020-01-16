@@ -1,5 +1,13 @@
 
 function run()
+    ---[[
+    addInventory("BELT", 50)
+    addInventory("SPLITTER", 4)
+    addInventory("BRIDGE", 4)
+    addInventory("SHAPER", 1)
+    addInventory("MINER", 2)    
+    --]]
+
     message("Welcome new builder.\nI am here to guide you trough the first steps of becoming the production king.")
     confirm()
     message("Press and hold the right mouse button on the [{1}] on the ground to start collecting them. Do not worry, there is an endless supply.")

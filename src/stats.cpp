@@ -1,5 +1,8 @@
 #include "stats.h"
 
+#include <sp2/graphics/gui/widget/label.h>
+#include <sp2/graphics/gui/widget/image.h>
+
 void StatsCollector::add(const ItemType* type, int amount)
 {
     seconds_group.add(type, amount);
@@ -28,6 +31,28 @@ void StatsCollector::show(sp::P<sp::gui::Widget> panel)
     {
         return a.per_second > b.per_second;
     });
+
+    for(auto& e : entries)
+    {
+        sp::P<sp::gui::Widget> row = new sp::gui::Widget(panel);
+        row->setAttribute("layout", "horizontal");
+        sp::P<sp::gui::Image> icon = new sp::gui::Image(row);
+        icon->setAttribute("size", "20, 20");
+        icon->setAttribute("image", e.type->texture);
+        sp::P<sp::gui::Label> label;
+        label = new sp::gui::Label(row);
+        label->setAttribute("size", "100, 20");
+        label->setAttribute("text.size", "20");
+        label->setAttribute("caption", sp::string(e.per_second) + "/sec");
+        label = new sp::gui::Label(row);
+        label->setAttribute("size", "100, 20");
+        label->setAttribute("text.size", "20");
+        label->setAttribute("caption", sp::string(float(e.per_minute) / 60.0f, 1) + "/sec");
+        label = new sp::gui::Label(row);
+        label->setAttribute("size", "100, 20");
+        label->setAttribute("text.size", "20");
+        label->setAttribute("caption", sp::string(float(e.per_hour) / 60.0f / 60.0f, 1) + "/sec");
+    }
 }
 
 void StatsCollector::onFixedUpdate()
