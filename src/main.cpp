@@ -10,6 +10,7 @@
 #include <sp2/graphics/gui/scene.h>
 #include <sp2/graphics/gui/theme.h>
 #include <sp2/graphics/gui/loader.h>
+#include <sp2/graphics/gui/widget/textfield.h>
 #include <sp2/graphics/scene/graphicslayer.h>
 #include <sp2/graphics/scene/basicnoderenderpass.h>
 #include <sp2/graphics/scene/collisionrenderpass.h>
@@ -23,6 +24,7 @@
 
 #include "main.h"
 #include "mainScene.h"
+#include "twitch.h"
 
 
 sp::P<sp::Window> window;
@@ -32,6 +34,7 @@ Controller controller;
 //Set to true to enable mod loading support.
 static bool can_load_mod = false;
 static sp::AtlasManager sprite_atlas_manager(sp::Vector2i(2048, 2048));
+static sp::P<TwitchTest> twitch;
 
 static void openOptionsMenu();
 static void openCreditsMenu();
@@ -71,6 +74,13 @@ void openMainMenu()
             }
         });
     });
+    menu->getWidgetWithID("TWITCH_CONNECT")->setEventCallback([=](sp::Variant v) mutable {
+        menu->getWidgetWithID("TWITCH")->hide();
+        sp::P<sp::gui::TextField> field = menu->getWidgetWithID("TWITCH_USERNAME");
+        twitch = new TwitchTest(field->getValue());
+    });
+    if (twitch)
+        menu->getWidgetWithID("TWITCH")->hide();
 #ifdef EMSCRIPTEN
     menu->getWidgetWithID("QUIT")->hide();
 #endif

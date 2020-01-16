@@ -43,4 +43,7 @@
     }
     [image] {
     }
+    [textfield] {
+        size: 10
+    }
 }

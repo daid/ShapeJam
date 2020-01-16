@@ -61,7 +61,7 @@
     size: 2, 2
 }
 [CUT_FACTORY] {
-    label: Cutting Factory
+    label: Cutter
     texture: cut_factory.png
     building: factory
     recipes: TRIANGLE2 LINE3

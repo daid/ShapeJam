@@ -15,6 +15,7 @@ public:
 
     virtual void setRecipe(const Recipe* recipe) override;
     virtual const Recipe* getRecipe() override { return selected_recipe; }
+
 private:
     void idle();
     void building();
@@ -22,7 +23,7 @@ private:
 
     bool tryToMake(const Recipe* recipe);
 
-    int getInventoryCount(const ItemType* type);
+    int getInventoryCount(const ItemType* type) override;
     int removeInventory(const ItemType* type, int amount);
 
     std::vector<const ItemType*> eject_list;

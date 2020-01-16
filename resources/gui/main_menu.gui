@@ -43,6 +43,45 @@
         alignment: bottomleft
         visible: false
     }
+    
+    [TWITCH] {
+        alignment: bottomright
+        type: panel
+        margin: 10
+        padding: 5
+        layout: vertical
+        {
+            type: label
+            caption: Connect to Twitch
+            text.size: 20
+            fill_width: true
+            size: 100, 20
+        }
+        {
+            type: label
+            caption: Twitch username:
+            text.size: 10
+            text.alignment: left
+            fill_width: true
+            size: 100, 10
+        }
+        {
+            type: panel
+            [TWITCH_USERNAME] {
+                type: textfield
+                size: 170, 10
+                margin: 2
+            }
+        }
+        [TWITCH_CONNECT] {
+            type: button
+            caption: Connect
+            text.size: 20
+            fill_width: true
+            size: 100, 30
+            margin: 3
+        }
+    }
 }
 
 [OPTIONS_MENU] {

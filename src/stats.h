@@ -16,6 +16,8 @@ public:
 
     virtual void onFixedUpdate() override;
 
+    int totalForSecond(const ItemType* type);
+    int totalForMinute(const ItemType* type);
 private:
     class Group
     {

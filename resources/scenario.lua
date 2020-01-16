@@ -1,6 +1,6 @@
 
 function run()
-    ---[[
+    --[[
     addInventory("BELT", 50)
     addInventory("SPLITTER", 4)
     addInventory("BRIDGE", 4)
@@ -33,7 +33,7 @@ function run()
     objective("")
     message("Good. The [{SHAPER}] is a basic factory machine that is used to create other items.")
     confirm()
-    message("Now place 3x [{3}] and 1x [{1}] on the [{SHAPER}] to have it fabricate 3x [{SQUARE3}]. And pickup the resulting [{SQUARE3}]")
+    message("Now place 3x [{3}] and 1x [{1}] on the [{SHAPER}] to have it fabricate 3x [{SQUARE3}]. And pickup the resulting [{SQUARE3}].")
     objective("Fabricate 3x [{SQUARE3}]")
     while countInventory("SQUARE3") < 3 do yield() end
     objective("")
@@ -45,8 +45,8 @@ function run()
     confirm()
     message("The [{MINER}] can be placed on items on the ground to extract them. And the [{BELT}] can then be used to move these into the [{SHAPER}].\nAlso, you can rotate any object by clicking on it again after selecting it.")
     objective("Automate [{SQUARE3}] production")
-    --TOFIX: Check production stats
-    while countInventory("SQUARE3") < 4 do yield() end
+    
+    while (secondStats("SQUARE3") < 1 or minuteStats("1") < 1 or minuteStats("3") < 1) and countInventory("SQUARE3") < 15 do yield() end
 
     message("Next we will need some [{SQUARE2}]. For for that, we will need to get [{2}]...")
     confirm()
@@ -55,9 +55,9 @@ function run()
     objective("Collect 3x [{2}]")
     while countInventory("2") < 3 do yield() end
     objective("")
-    message("Good job. I'll give you some more machines to work with")
+    message("Good job. I'll give you some more machines to work with.")
     confirm()
-    addInventory("BELT", 10)
+    addInventory("BELT", 40)
     addInventory("SPLITTER", 4)
     addInventory("BRIDGE", 4)
     addInventory("SHAPER", 1)
@@ -76,4 +76,8 @@ function run()
     message("That is it for now. Have fun, and get your production stats up!")
     confirm()
     objective("Create 500x [{SQUARE2LINE3}]")
+    while countInventory("SQUARE2LINE3") < 3 do yield() end
+    objective("")
+    message("Ok. I did not expect anyone to actually do that... sorry.")
+    confirm()
 end

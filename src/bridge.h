@@ -11,6 +11,8 @@ public:
     virtual void onUpdate(float delta) override;
     virtual bool accepts(const ItemType* type, Direction direction) override;
     virtual void userRotate() override;
+
+    virtual bool canBeBridged() override { return false; }
 private:
     void tryToConnect();
     void disconnect();
@@ -23,7 +25,7 @@ private:
 
     bool init = true;
 
-    static constexpr int max_length = 4;
+    static constexpr int max_length = 5;
 };
 
 class BridgeNode : public sp::Node

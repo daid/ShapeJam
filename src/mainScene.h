@@ -3,6 +3,7 @@
 
 #include <sp2/scene/scene.h>
 #include <sp2/graphics/gui/widget/widget.h>
+#include <sp2/graphics/gui/loader.h>
 #include <sp2/script/environment.h>
 #include <sp2/timer.h>
 
@@ -49,6 +50,7 @@ private:
     sp::P<sp::Node> camera_view_target;
 
     sp::P<sp::gui::Widget> gui;
+    sp::gui::Loader gui_loader{"gui/hud.gui"};
 
     class Inventory
     {

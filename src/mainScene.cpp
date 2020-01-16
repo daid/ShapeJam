@@ -65,6 +65,28 @@ static void lua_enableRotation()
     scene->enableRotation();
 }
 
+static int lua_secondStats(sp::string itemType)
+{
+    sp::P<Scene> scene = Scene::get("MAIN");
+    for(sp::P<World> world : scene->getRoot()->getChildren())
+    {
+        if (world)
+            return world->stats->totalForSecond(ItemType::get(itemType));
+    }
+    return 0;
+}
+
+static int lua_minuteStats(sp::string itemType)
+{
+    sp::P<Scene> scene = Scene::get("MAIN");
+    for(sp::P<World> world : scene->getRoot()->getChildren())
+    {
+        if (world)
+            return world->stats->totalForMinute(ItemType::get(itemType));
+    }
+    return 0;
+}
+
 Scene::Scene()
 : sp::Scene("MAIN")
 {
@@ -81,7 +103,6 @@ Scene::Scene()
     //new TwitchTest(getRoot());
     sp::P<World> world = new World(getRoot());
 
-    sp::gui::Loader gui_loader("gui/hud.gui");
     gui = gui_loader.create("HUD");
 
     sp::P<sp::gui::Widget> row = gui_loader.create("INVENTORY_ROW", gui->getWidgetWithID("INVENTORY"));
@@ -137,6 +158,8 @@ Scene::Scene()
     script_environment->setGlobal("countInventory", lua_countInventory);
     script_environment->setGlobal("removeInventory", lua_removeInventory);
     script_environment->setGlobal("enableRotation", lua_enableRotation);
+    script_environment->setGlobal("secondStats", lua_secondStats);
+    script_environment->setGlobal("minuteStats", lua_minuteStats);
     script_coroutine = script_environment->callCoroutine("run");
 }
 
@@ -181,7 +204,9 @@ void Scene::onPointerDrag(sp::Ray3d ray, int id)
     }
     if (pointer_action == PointerAction::Pickup)
     {
-        startPickup(getTileFromRay(ray));
+        Tile* tile = getTileFromRay(ray);
+        if (tile != pickup_tile)
+            startPickup(tile);
     }
 }
 
@@ -239,6 +264,7 @@ void Scene::onUpdate(float delta)
     }
     if (!selected_building)
         gui->getWidgetWithID("INFO_PANEL")->hide();
+
     if (pickup_timer.isRunning())
     {
         sp::MeshBuilder b;
@@ -290,6 +316,26 @@ void Scene::onFixedUpdate()
                 world->stats->show(stats_panel->getWidgetWithID("STATS_CONTENTS"));
         }
     }
+
+    if (selected_building)
+    {
+        sp::P<sp::gui::Widget> info = gui->getWidgetWithID("INFO_PANEL");
+
+        auto box_iterator = info->getWidgetWithID("RECIPES")->getChildren().begin();
+        for(auto recipe : selected_building->placed_from_type->recipes)
+        {
+            sp::P<sp::gui::Widget> recipe_box = *box_iterator;
+            ++box_iterator;
+            auto input_iterator = recipe_box->getWidgetWithID("INPUT")->getChildren().begin();
+            for(auto input : recipe->input)
+            {
+                sp::P<sp::gui::Widget> recipe_item = *input_iterator;
+                ++input_iterator;
+                recipe_item->getWidgetWithID("PROGRESS")->layout.size.y = std::min(20.0, 20.0 * selected_building->getInventoryCount(input.first) / input.second);
+            }
+        }
+
+    }
 }
 
 void Scene::startPickup(Tile* tile)
@@ -334,19 +380,19 @@ void Scene::setSelection(sp::P<Building> building)
         delete **info->getWidgetWithID("RECIPES")->getChildren().begin();
     info->getWidgetWithID("RECIPES")->setSize(0, 0);
 
-    sp::gui::Loader gui_loader("gui/hud.gui");
     for(auto recipe : building->placed_from_type->recipes)
     {
         sp::P<sp::gui::Widget> recipe_box = gui_loader.create("RECIPE_BOX", info->getWidgetWithID("RECIPES"));
         for(auto input : recipe->input)
         {
-            sp::P<sp::gui::Widget> recipe_item = gui_loader.create("RECIPE_ITEM", recipe_box->getWidgetWithID("INPUT"));
+            sp::P<sp::gui::Widget> recipe_item = gui_loader.create("RECIPE_INPUT_ITEM", recipe_box->getWidgetWithID("INPUT"));
             recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", input.first->texture);
+            recipe_item->getWidgetWithID("PROGRESS")->layout.size.y = std::min(20.0, 20.0 * building->getInventoryCount(input.first) / input.second);
             recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(input.second));
         }
         for(auto output : recipe->output)
         {
-            sp::P<sp::gui::Widget> recipe_item = gui_loader.create("RECIPE_ITEM", recipe_box->getWidgetWithID("OUTPUT"));
+            sp::P<sp::gui::Widget> recipe_item = gui_loader.create("RECIPE_OUTPUT_ITEM", recipe_box->getWidgetWithID("OUTPUT"));
             recipe_item->getWidgetWithID("IMAGE")->setAttribute("image", output.first->texture);
             recipe_item->getWidgetWithID("AMOUNT")->setAttribute("caption", "x" + sp::string(output.second));
         }

@@ -29,7 +29,7 @@ void StatsCollector::show(sp::P<sp::gui::Widget> panel)
     }
     std::sort(entries.begin(), entries.end(), [](const Entry& a, const Entry& b)
     {
-        return a.per_second > b.per_second;
+        return a.per_minute > b.per_minute;
     });
 
     for(auto& e : entries)
@@ -60,6 +60,20 @@ void StatsCollector::onFixedUpdate()
     if (seconds_group.shift())
         if (minutes_group.shift())
             hours_group.shift();
+}
+
+int StatsCollector::totalForSecond(const ItemType* type)
+{
+    if (type == nullptr)
+        return 0;
+    return seconds_group.totals[type];
+}
+
+int StatsCollector::totalForMinute(const ItemType* type)
+{
+    if (type == nullptr)
+        return 0;
+    return minutes_group.totals[type];
 }
 
 void StatsCollector::Group::add(const ItemType* type, int amount)

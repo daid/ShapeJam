@@ -18,7 +18,7 @@ public:
 
     bool placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal);
     virtual bool accepts(const ItemType* type, Direction direction) { return false; }
-    virtual bool canBeBridged() { return false; }
+    virtual bool canBeBridged() { return true; }
 
     virtual void userRotate();
     void setDirection(Direction dir);
@@ -26,6 +26,8 @@ public:
 
     virtual void setRecipe(const Recipe* recipe) {}
     virtual const Recipe* getRecipe() { return nullptr; }
+
+    virtual int getInventoryCount(const ItemType* type) { return 0; }
 
     const ItemType* placed_from_type;
 protected:

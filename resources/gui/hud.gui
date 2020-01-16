@@ -14,7 +14,7 @@
         alignment: topright
         layout: vertical
         padding: 5
-        margin: 0, 20
+        margin: 0, 15
         {
             type: label
             caption: INFO
@@ -164,7 +164,36 @@
     }
 }
 
-[RECIPE_ITEM] {
+[RECIPE_INPUT_ITEM] {
+    layout: horizontal
+    [BACKGROUND] {
+        type: image
+        size: 20, 20
+        image: gui/theme/pixel.png
+        color: #602020
+        margin: 2
+        [PROGRESS] {
+            type: image
+            size: 20, 10
+            image: gui/theme/pixel.png
+            color: #206020
+            alignment: bottom
+        }
+        [IMAGE] {
+            type: image
+            size: 20, 20
+        }
+    }
+    [AMOUNT] {
+        type: label
+        caption: x10
+        text.size: 10
+        text.alignment: bottom
+        size: 20, 20
+    }
+}
+
+[RECIPE_OUTPUT_ITEM] {
     layout: horizontal
     [BACKGROUND] {
         type: image
