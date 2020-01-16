@@ -172,7 +172,7 @@ Scene::~Scene()
 
 bool Scene::onPointerDown(sp::io::Pointer::Button button, sp::Ray3d ray, int id)
 {
-    if (button == sp::io::Pointer::Button::Right)
+    if (button == sp::io::Pointer::Button::Right || (button == sp::io::Pointer::Button::Touch && selected_inventory_index == -1))
     {
         pointer_action = PointerAction::Pickup;
         startPickup(getTileFromRay(ray));
