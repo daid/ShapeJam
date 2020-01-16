@@ -1,5 +1,6 @@
 #include "world.h"
 #include "itemType.h"
+#include "stats.h"
 
 #include <sp2/scene/voxelmap.h>
 #include <sp2/collision/3d/box.h>
@@ -68,7 +69,7 @@ World::World(sp::P<sp::Node> parent)
     voxels = new sp::Voxelmap(this, "ground_tiles.png", 1.0, 4, 4);
     for(int n=0; n<4*4; n++)
         voxels->setVoxelData(n, {n, n, n});
-    
+
     struct AreaDef
     {
         sp::Vector3f position;
@@ -116,6 +117,8 @@ World::World(sp::P<sp::Node> parent)
     sp::collision::Box3D shape(sp::Vector3d(size, size, size));
     shape.type = sp::collision::Shape::Type::Static;
     setCollisionShape(shape);
+
+    stats = new StatsCollector(this);
 }
 
 WorldSide& World::getSideAt(sp::Vector3d normal)

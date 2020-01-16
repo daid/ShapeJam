@@ -18,6 +18,7 @@ class Item;
 class ItemType;
 class World;
 class WorldSide;
+class StatsCollector;
 class Tile
 {
 public:
@@ -57,6 +58,7 @@ public:
     Tile& getTileAt(sp::Vector3d position, sp::Vector3d normal);
 
     static constexpr int size=16;
+    sp::P<StatsCollector> stats;
 private:
     sp::P<sp::Voxelmap> voxels;
     std::array<WorldSide, 6> sides{{

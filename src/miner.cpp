@@ -1,6 +1,7 @@
 #include "miner.h"
 #include "world.h"
 #include "item.h"
+#include "stats.h"
 
 #include <sp2/graphics/spriteAnimation.h>
 #include <sp2/audio/sound.h>
@@ -28,20 +29,14 @@ void Miner::onUpdate(float delta)
         const ItemType* mine_type = mine_tile->getMineType();
         if (mine_type)
         {
-            Tile& tile = getTile(sp::Vector2i(0, 1));
-            Tile& exit_tile = tile.getTile(direction);
+            Tile& exit_tile = getTile(sp::Vector2i(0, 1)).getTile(direction);
 
-            if (!tile.item && !exit_tile.item && (!exit_tile.building || exit_tile.building->accepts(mine_type, direction)))
+            if (!exit_tile.item && (!exit_tile.building || exit_tile.building->accepts(mine_type, direction)))
             {
-                sp::P<Item> item = new Item(&tile, mine_type);
-                if (!item->requestMove(direction))
-                {
-                    item.destroy();
-                }
-                else
-                {
-                    sp::audio::Sound::play("craft.wav");
-                }
+                sp::P<Item> item = new Item(&exit_tile, mine_type);
+                item->fakeMoveFrom(direction);
+                sp::audio::Sound::play("craft.wav");
+                corner_tile->side.world.stats->add(mine_type, 1);
             }
         }
     }

@@ -1,6 +1,7 @@
 #include "factory.h"
 #include "world.h"
 #include "item.h"
+#include "stats.h"
 
 #include <sp2/graphics/spriteAnimation.h>
 #include <sp2/audio/sound.h>
@@ -122,6 +123,7 @@ void Factory::ejecting()
     if (!exit_tile.item)
     {
         Item* item = new Item(&exit_tile, eject_list.back());
+        corner_tile->side.world.stats->add(eject_list.back(), 1);
         item->fakeMoveFrom(direction);
         sp::audio::Sound::play("craft.wav");
         eject_list.pop_back();
