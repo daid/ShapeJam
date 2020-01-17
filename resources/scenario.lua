@@ -48,7 +48,7 @@ function run()
     
     while (secondStats("SQUARE3") < 1 or minuteStats("1") < 1 or minuteStats("3") < 1) and countInventory("SQUARE3") < 15 do yield() end
 
-    message("Next we will need some [{SQUARE2}]. For for that, we will need to get [{2}]...")
+    message("Next we will need some [{SQUARE2}]. For that, we will need to get [{2}]...")
     confirm()
     enableRotation()
     message("But, I have the solution for you. We'll add an extra dimension. I was told to just tell you to 'Click&Drag', whatever that may mean.")
