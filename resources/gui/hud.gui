@@ -133,12 +133,23 @@
         type: image
     }
     [AMOUNT] {
-        stretch: true
         type: label
         text.alignment: bottom
         text.size: 8
+        alignment: bottom
         margin: 1
-        order: 1
+        order: 10
+        size: 1, 1
+        scale_to_text: true
+        {
+            type: image
+            image: gui/theme/pixel.png
+            color: #20202080
+            fill_width: true
+            height: 8
+            alignment: bottom
+            order: -10
+        }
     }
 }
 

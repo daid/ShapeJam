@@ -48,6 +48,12 @@ function run()
     
     while (secondStats("SQUARE3") < 1 or minuteStats("1") < 1 or minuteStats("3") < 1) and countInventory("SQUARE3") < 15 do yield() end
 
+    message("Now that you have automation handled. Let us add one more machine to the chain.")
+    confirm()
+    addInventory("CUT_FACTORY", 1)
+    message("The [{CUT_FACTORY}] is used to create [{LINE3}]. Setup a line to create these now.");
+    while secondStats("LINE3") < 1 and countInventory("LINE3") < 1 do yield() end
+    
     message("Next we will need some [{SQUARE2}]. For that, we will need to get [{2}]...")
     confirm()
     enableRotation()
