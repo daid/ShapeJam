@@ -43,7 +43,7 @@ function run()
     addInventory("BELT", 15)
     message("I have given you 2x [{MINER}] and a few [{BELT}]. These can be used to automate the whole process of creating [{SQUARE3}]")
     confirm()
-    message("The [{MINER}] can be placed on items on the ground to extract them. And the [{BELT}] can then be used to move these into the [{SHAPER}].\nAlso, you can rotate any object by clicking on it again after selecting it.")
+    message("The [{MINER}] can be placed on items on the ground to extract them. And the [{BELT}] can then be used to move these into the [{SHAPER}].\nAlso, you can rotate any object by clicking on it again after selecting it on the map.")
     objective("Automate [{SQUARE3}] production")
     
     while (secondStats("SQUARE3") < 1 or minuteStats("1") < 1 or minuteStats("3") < 1) and countInventory("SQUARE3") < 15 do yield() end
