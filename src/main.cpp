@@ -208,7 +208,11 @@ int main(int argc, char** argv)
     sp::SpriteAnimation::setAtlasManager(&sprite_atlas_manager);
 
     //Create a window to render on, and our engine.
+#ifdef ANDROID
+    window = new sp::Window(4.0f/3.0f);
+#else
     window = new sp::Window();
+#endif
 #if !defined(DEBUG) && !defined(EMSCRIPTEN)
     window->setFullScreen(true);
 #endif

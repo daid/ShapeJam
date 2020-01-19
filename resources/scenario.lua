@@ -47,11 +47,13 @@ function run()
     objective("Automate [{SQUARE3}] production")
     
     while (secondStats("SQUARE3") < 1 or minuteStats("1") < 1 or minuteStats("3") < 1) and countInventory("SQUARE3") < 15 do yield() end
+    objective("")
 
     message("Now that you have automation handled. Let us add one more machine to the chain.")
     confirm()
     addInventory("CUT_FACTORY", 1)
-    message("The [{CUT_FACTORY}] is used to create [{LINE3}]. Setup a line to create these now.");
+    message("The [{CUT_FACTORY}] is used to create [{LINE3}]. Setup a production line to create these now.");
+    objective("Automate [{LINE3}] production")
     while secondStats("LINE3") < 1 and countInventory("LINE3") < 1 do yield() end
     
     message("Next we will need some [{SQUARE2}]. For that, we will need to get [{2}]...")
@@ -82,7 +84,7 @@ function run()
     message("That is it for now. Have fun, and get your production stats up!")
     confirm()
     objective("Create 500x [{SQUARE2LINE3}]")
-    while countInventory("SQUARE2LINE3") < 3 do yield() end
+    while countInventory("SQUARE2LINE3") < 500 do yield() end
     objective("")
     message("Ok. I did not expect anyone to actually do that... sorry.")
     confirm()

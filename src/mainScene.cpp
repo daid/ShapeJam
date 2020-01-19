@@ -344,7 +344,7 @@ void Scene::startPickup(Tile* tile)
     pickup_tile = tile;
     if (pickup_tile && (pickup_tile->item || pickup_tile->building || pickup_tile->getMineType()))
     {
-        pickup_timer.start(0.7);
+        pickup_timer.start(0.3);
 
         pickup_indicator = new sp::Node(&pickup_tile->side.world);
         if (pickup_tile->building)
