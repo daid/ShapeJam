@@ -170,6 +170,35 @@ Scene::~Scene()
     script_environment.destroy();
 }
 
+bool Scene::onPointerMove(sp::Ray3d ray, int id)
+{
+    if (selected_inventory_index < 0 || inventory[selected_inventory_index].amount < 1)
+        return false;
+
+    sp::Vector2i size = inventory[selected_inventory_index].type->size;
+    Tile* t = getTileFromRay(ray, size);
+    if (t)
+    {
+        if (!place_preview)
+        {
+            place_preview = new sp::Node(&t->side.world);
+            place_preview->render_data.type = sp::RenderData::Type::Transparent;
+            place_preview->render_data.shader = sp::Shader::get("internal:color.shader");
+            place_preview->render_data.mesh = sp::MeshData::createQuad(sp::Vector2f(size));
+            place_preview->render_data.color = sp::Color(0.0, 0.5, 0.0, 0.3);
+        }
+        place_preview->setPosition(t->position + t->side.up * 0.05 + t->side.right * ((size.x - 1) * 0.5) + t->side.forward * ((size.y - 1) * 0.5));
+        place_preview->setRotation(t->side.rotation);
+        return true;
+    }
+    return false;
+}
+
+void Scene::onPointerLeave(int id)
+{
+    place_preview.destroy();
+}
+
 bool Scene::onPointerDown(sp::io::Pointer::Button button, sp::Ray3d ray, int id)
 {
     if (button == sp::io::Pointer::Button::Right || (button == sp::io::Pointer::Button::Touch && selected_inventory_index == -1))
@@ -414,15 +443,18 @@ void Scene::setSelection(sp::P<Building> building)
     selection_indicator->render_data.color = sp::Color(0.4, 0.8, 0.4);
 }
 
-Tile* Scene::getTileFromRay(sp::Ray3d ray)
+Tile* Scene::getTileFromRay(sp::Ray3d ray, sp::Vector2i object_size)
 {
     Tile* result = nullptr;
-    queryCollisionAll(ray, [&result](sp::P<sp::Node> obj, sp::Vector3d hit_location, sp::Vector3d hit_normal)
+    queryCollisionAll(ray, [&result, object_size](sp::P<sp::Node> obj, sp::Vector3d hit_location, sp::Vector3d hit_normal)
     {
         sp::P<World> world = obj;
         if (world)
         {
-            result = &world->getTileAt(hit_location, hit_normal);
+            WorldSide& side = world->getSideAt(hit_normal);
+            hit_location -= side.right * ((object_size.x - 1) * 0.5);
+            hit_location -= side.forward * ((object_size.y - 1) * 0.5);
+            result = &side.getTileAt(hit_location);
         }
         return false;
     });

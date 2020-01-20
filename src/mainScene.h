@@ -16,6 +16,8 @@ public:
     Scene();
     ~Scene();
 
+    virtual bool onPointerMove(sp::Ray3d ray, int id) override;
+    virtual void onPointerLeave(int id) override;
     virtual bool onPointerDown(sp::io::Pointer::Button button, sp::Ray3d ray, int id) override;
     virtual void onPointerDrag(sp::Ray3d ray, int id) override;
     virtual void onPointerUp(sp::Ray3d ray, int id) override;
@@ -31,7 +33,7 @@ public:
     void setupMessageConfirm();
     void enableRotation();
 private:
-    Tile* getTileFromRay(sp::Ray3d ray);
+    Tile* getTileFromRay(sp::Ray3d ray, sp::Vector2i object_size=sp::Vector2i(1, 1));
     void startPickup(Tile* tile);
     void stopPickup();
 
@@ -40,10 +42,11 @@ private:
     bool allow_rotate = false;
     enum class PointerAction
     {
+        None,
         SelectPlaceOrRotateView,
         RotateView,
         Pickup
-    } pointer_action;
+    } pointer_action = PointerAction::None;
     
     Direction new_placement_direction = Direction::Forward;
     sp::Vector3f pointer_position;
@@ -65,6 +68,8 @@ private:
     sp::Timer pickup_timer;
     Tile* pickup_tile;
     sp::P<sp::Node> pickup_indicator;
+
+    sp::P<sp::Node> place_preview;
 
     sp::P<Building> selected_building;
     sp::P<sp::Node> selection_indicator;
