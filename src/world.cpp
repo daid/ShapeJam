@@ -46,10 +46,7 @@ WorldSide::WorldSide(World& world, int size, sp::Quaterniond rotation)
         for(int x=0; x<size; x++)
         {
             double px = double(x) - double(size) * 0.5 + 0.5;
-            tiles.push_back({
-                .side = *this,
-                .position = center + right * px + forward * py,
-            });
+            tiles.emplace_back(*this, center + right * px + forward * py);
         }
     }
 }
