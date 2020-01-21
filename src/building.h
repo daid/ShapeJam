@@ -16,7 +16,7 @@ public:
 
     sp::Vector2i getSize() { return size; }
 
-    bool placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal);
+    bool placeAt(Tile* tile);
     virtual bool accepts(const ItemType* type, Direction direction) { return false; }
     virtual bool canBeBridged() { return true; }
 

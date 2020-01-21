@@ -26,7 +26,7 @@ public:
     } building_type = BuildingType::None;
     std::vector<const Recipe*> recipes;
 
-    sp::P<sp::Node> placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal) const;
+    sp::P<sp::Node> placeAt(Tile* tile) const;
 
     static void init();
     static void initRecipes();

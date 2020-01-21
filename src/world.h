@@ -23,6 +23,11 @@ class StatsCollector;
 class Tile
 {
 public:
+    Tile(WorldSide& side, sp::Vector3d position)
+    : side(side), position(position)
+    {
+    }
+
     WorldSide& side;
     sp::Vector3d position;
     int ground_type;
@@ -60,6 +65,7 @@ public:
 
     static constexpr int size=16;
     sp::P<StatsCollector> stats;
+
 private:
     sp::P<sp::Voxelmap> voxels;
     std::array<WorldSide, 6> sides{{

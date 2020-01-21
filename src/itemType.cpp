@@ -15,7 +15,7 @@ std::unordered_map<sp::string, std::unique_ptr<ItemType>> ItemType::items;
 std::map<sp::string, sp::string> ItemType::translations;
 
 
-sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal) const
+sp::P<sp::Node> ItemType::placeAt(Tile* tile) const
 {
     sp::P<Building> building;
 
@@ -24,25 +24,25 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
     case BuildingType::None:
         break;
     case BuildingType::Miner:
-        building = new Miner(world, this);
+        building = new Miner(&tile->side.world, this);
         break;
     case BuildingType::Belt:
-        building = new Belt(world);
+        building = new Belt(&tile->side.world);
         break;
     case BuildingType::Splitter:
-        building = new Splitter(world);
+        building = new Splitter(&tile->side.world);
         break;
     case BuildingType::Bridge:
-        building = new Bridge(world);
+        building = new Bridge(&tile->side.world);
         break;
     case BuildingType::Factory:
-        building = new Factory(world, this);
+        building = new Factory(&tile->side.world, this);
         break;
     }
 
     if (building)
     {
-        if (!building->placeAt(world, position, normal))
+        if (!building->placeAt(tile))
         {
             building.destroy();
             return nullptr;
@@ -52,12 +52,11 @@ sp::P<sp::Node> ItemType::placeAt(sp::P<World> world, sp::Vector3d position, sp:
         return building;
     }
 
-    Tile& tile = world->getTileAt(position, normal);
-    if (tile.item)
+    if (tile->item)
         return nullptr;
-    if (tile.building && !tile.building->accepts(this, Direction::Forward))
+    if (tile->building && !tile->building->accepts(this, Direction::Forward))
         return nullptr;
-    return new Item(&tile, this);
+    return new Item(tile, this);
 }
 
 void ItemType::init()

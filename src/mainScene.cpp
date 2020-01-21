@@ -6,6 +6,7 @@
 #include "building.h"
 #include "stats.h"
 
+#include <sp2/engine.h>
 #include <sp2/scene/camera.h>
 #include <sp2/scene/voxelmap.h>
 #include <sp2/graphics/meshbuilder.h>
@@ -201,6 +202,8 @@ void Scene::onPointerLeave(int id)
 
 bool Scene::onPointerDown(sp::io::Pointer::Button button, sp::Ray3d ray, int id)
 {
+    camera_snap_timer.stop();
+
     if (button == sp::io::Pointer::Button::Right || (button == sp::io::Pointer::Button::Touch && selected_inventory_index == -1))
     {
         pointer_action = PointerAction::Pickup;
@@ -245,55 +248,87 @@ void Scene::onPointerUp(sp::Ray3d ray, int id)
 
     if (pointer_action == PointerAction::SelectPlaceOrRotateView)
     {
-        queryCollisionAll(ray, [this](sp::P<sp::Node> obj, sp::Vector3d hit_location, sp::Vector3d hit_normal)
+        if (selected_inventory_index > -1 && inventory[selected_inventory_index].amount > 0 && inventory[selected_inventory_index].type)
         {
-            sp::P<World> world = obj;
-            if (world)
+            Inventory& inv = inventory[selected_inventory_index];
+            Tile* corner_tile = getTileFromRay(ray, inv.type->size);
+            if (corner_tile)
             {
-                Tile& tile = world->getTileAt(hit_location, hit_normal);
-
-                if (selected_inventory_index > -1)
+                sp::P<sp::Node> result = inv.type->placeAt(corner_tile);
+                if (result)
                 {
-                    auto& inv = inventory[selected_inventory_index];
-                    
-                    if (inv.amount > 0 && inv.type)
-                    {
-                        sp::P<sp::Node> result = inv.type->placeAt(world, hit_location, hit_normal);
-                        if (result)
-                        {
-                            sp::P<Building> building = result;
-                            if (building)
-                                building->setDirection(new_placement_direction);
-                            removeInventory(inv.type, 1);
-                            setSelection(tile.building);
-                            return false;
-                        }
-                    }
+                    sp::P<Building> building = result;
+                    if (building)
+                        building->setDirection(new_placement_direction);
+                    removeInventory(inv.type, 1);
+                    setSelection(corner_tile->building);
+                    return;
                 }
-
-                if (tile.building && selected_building == tile.building)
-                {
-                    tile.building->userRotate();
-                    new_placement_direction = tile.building->getDirection();
-                }
-                setSelection(tile.building);
             }
-            return false;
-        });
+        }
+        Tile* center_tile = getTileFromRay(ray);
+        if (center_tile)
+        {
+            if (center_tile->building && selected_building == center_tile->building)
+            {
+                center_tile->building->userRotate();
+                new_placement_direction = center_tile->building->getDirection();
+            }
+            setSelection(center_tile->building);
+        }
     }
+    if (pointer_action == PointerAction::RotateView)
+    {
+        auto rotation = camera_view_target->getRotation3D();
+        auto forward = rotation * sp::Vector3d(0, 0, 1);
+
+        for(auto v : {sp::Vector3d(1, 0, 0), sp::Vector3d(-1, 0, 0), sp::Vector3d(0, 1, 0), sp::Vector3d(0, -1, 0), sp::Vector3d(0, 0, 1), sp::Vector3d(0, 0, -1)})
+        {
+            if ((forward - v).length() < 0.35)
+            {
+                camera_rotate_source = rotation;
+                camera_rotate_target = sp::Quaterniond::fromVectorToVector(forward, v) * rotation;
+                camera_rotate_target.normalize();
+                camera_snap_timer.start(0.5);
+                
+                sp::Vector3d world_up(v.y, v.z, v.x);
+                sp::Vector3d source_vector = camera_rotate_target * sp::Vector3d(1, 0, 0);
+                for(auto dir : {camera_rotate_target * sp::Vector3d(0, 1, 0), camera_rotate_target * sp::Vector3d(-1, 0, 0), camera_rotate_target * sp::Vector3d(0,-1, 0)})
+                {
+                    if ((world_up - dir).length() < (world_up - source_vector).length())
+                        source_vector = dir;
+                }
+                camera_rotate_target = sp::Quaterniond::fromVectorToVector(source_vector, world_up) * camera_rotate_target;
+            }
+        }
+    }
+    pointer_action = PointerAction::None;
 }
 
 void Scene::onUpdate(float delta)
 {
     if (escape_key.getUp())
     {
-        delete this;
-        openMainMenu();
+        disable();
+        sp::Engine::getInstance()->setGameSpeed(0.0);
+        sp::P<sp::gui::Widget> menu = sp::gui::Loader::load("gui/ingame_menu.gui", "INGAME_MENU");
+        menu->getWidgetWithID("RESUME")->setEventCallback([=](sp::Variant v) mutable
+        {
+            menu.destroy();
+            sp::Engine::getInstance()->setGameSpeed(1.0);
+            enable();
+        });
+        menu->getWidgetWithID("EXIT")->setEventCallback([=](sp::Variant v) mutable
+        {
+            menu.destroy();
+            sp::Engine::getInstance()->setGameSpeed(1.0);
+            sp::Scene::get("MAIN").destroy();
+            openMainMenu();
+        });
         return;
     }
     if (!selected_building)
         gui->getWidgetWithID("INFO_PANEL")->hide();
-
     if (pickup_timer.isRunning())
     {
         sp::MeshBuilder b;
@@ -321,6 +356,14 @@ void Scene::onUpdate(float delta)
             pickup_indicator.destroy();
             startPickup(pickup_tile);
         }
+    }
+
+    if (camera_snap_timer.isRunning())
+    {
+        if (camera_snap_timer.isExpired())
+            camera_view_target->setRotation(camera_rotate_target);
+        else
+            camera_view_target->setRotation(camera_rotate_source.slerp(camera_rotate_target, camera_snap_timer.getProgress()));
     }
 }
 

@@ -1,0 +1,41 @@
+[INGAME_MENU] {
+    type: image
+    image: gui/theme/pixel.png
+    color: #00000040
+    stretch: true
+    order: 100
+
+    {
+        type: panel
+        layout: vertical
+        alignment: center
+        
+        [RESUME] {
+            @ref: MAIN_BUTTON
+            caption: RESUME
+            keybinding: ESCAPE
+        }
+
+        [SAVE] {
+            @ref: MAIN_BUTTON
+            caption: SAVE
+        }
+
+        [LOAD] {
+            @ref: MAIN_BUTTON
+            caption: LOAD
+        }
+
+        [EXIT] {
+            @ref: MAIN_BUTTON
+            caption: EXIT
+        }
+    }
+}
+
+[@MAIN_BUTTON] {
+    type: button
+    size: 200, 50
+    margin: 10
+    alignment: center
+}

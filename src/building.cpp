@@ -13,19 +13,16 @@ Building::~Building()
 {
 }
 
-bool Building::placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d normal)
+bool Building::placeAt(Tile* tile)
 {
-    WorldSide& side = world->getSideAt(normal);
-    position -= side.right * ((size.x - 1) * 0.5);
-    position -= side.forward * ((size.y - 1) * 0.5);
-    Tile& tile = side.getTileAt(position);
-    corner_tile = &tile;
+    corner_tile = tile;
+    WorldSide& side = tile->side;
 
     for(int x=0; x<size.x; x++)
     {
         for(int y=0; y<size.y; y++)
         {
-            sp::Vector3d p = tile.position + side.right * double(x) + side.forward * double(y);
+            sp::Vector3d p = tile->position + side.right * double(x) + side.forward * double(y);
             Tile& t = side.getTileAt(p);
             if (t.building || (p - t.position).length() > 0.7)
                 return false;
@@ -40,12 +37,12 @@ bool Building::placeAt(sp::P<World> world, sp::Vector3d position, sp::Vector3d n
     {
         for(int y=0; y<size.y; y++)
         {
-            Tile& t = side.getTileAt(tile.position + side.right * double(x) + side.forward * double(y));
+            Tile& t = side.getTileAt(tile->position + side.right * double(x) + side.forward * double(y));
             t.building = this;
         }
     }
 
-    setPosition(tile.position + side.up * 0.1 + side.right * ((size.x - 1) * 0.5) + side.forward * ((size.y - 1) * 0.5));
+    setPosition(tile->position + side.up * 0.1 + side.right * ((size.x - 1) * 0.5) + side.forward * ((size.y - 1) * 0.5));
     setRotation(side.rotation);
     return true;
 }

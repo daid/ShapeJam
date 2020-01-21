@@ -51,6 +51,9 @@ private:
     Direction new_placement_direction = Direction::Forward;
     sp::Vector3f pointer_position;
     sp::P<sp::Node> camera_view_target;
+    sp::Timer camera_snap_timer;
+    sp::Quaterniond camera_rotate_source;
+    sp::Quaterniond camera_rotate_target;
 
     sp::P<sp::gui::Widget> gui;
     sp::gui::Loader gui_loader{"gui/hud.gui"};
