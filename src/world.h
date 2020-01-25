@@ -2,6 +2,7 @@
 
 #include <sp2/scene/node.h>
 #include <sp2/scene/voxelmap.h>
+#include <sp2/io/serialization/dataset.h>
 #include <array>
 
 enum class Direction
@@ -66,6 +67,9 @@ public:
     static constexpr int size=16;
     sp::P<StatsCollector> stats;
 
+    void save(sp::io::serialization::DataSet& data) const;
+    void load(const sp::io::serialization::DataSet& data);
+    static sp::AutoPointerObject* create(const sp::io::serialization::DataSet& data);
 private:
     sp::P<sp::Voxelmap> voxels;
     std::array<WorldSide, 6> sides{{

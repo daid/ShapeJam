@@ -32,6 +32,9 @@ public:
     void objective(const sp::string& message);
     void setupMessageConfirm();
     void enableRotation();
+
+    void saveGame();
+    void loadGame();
 private:
     Tile* getTileFromRay(sp::Ray3d ray, sp::Vector2i object_size=sp::Vector2i(1, 1));
     void startPickup(Tile* tile);

@@ -108,3 +108,36 @@ void Item::onUpdate(float delta)
             setPosition(sp::Tween<sp::Vector3d>::linear(move_timer.getProgress(), 0, 1, old_position, new_position));
     }
 }
+
+void Item::save(sp::io::serialization::DataSet& data) const
+{
+    data.set("type", type->name);
+    data.set("world", &tile->side.world);
+    data.set("tile_normal", tile->side.up);
+    data.set("tile_position", tile->position);
+
+    if (move_timer.isRunning())
+    {
+        data.set("move_timer", move_timer.getProgress());
+        data.set("old_position", old_position);
+        data.set("new_position", new_position);
+    }
+}
+
+void Item::load(const sp::io::serialization::DataSet& data)
+{
+    if (data.has("move_timer"))
+    {
+        move_timer.start(0.25);
+        //TODO: set timer progress.
+        old_position = data.get<sp::Vector3d>("old_position");
+        new_position = data.get<sp::Vector3d>("new_position");
+    }
+}
+
+sp::AutoPointerObject* Item::create(const sp::io::serialization::DataSet& data)
+{
+    sp::P<World> world = data.getObject("world");
+    Tile& tile = world->getTileAt(data.get<sp::Vector3d>("tile_position"), data.get<sp::Vector3d>("tile_normal"));
+    return new Item(&tile, ItemType::get(data.get<sp::string>("type")));
+}

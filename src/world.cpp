@@ -1,7 +1,10 @@
 #include "world.h"
+#include "item.h"
+#include "building.h"
 #include "itemType.h"
 #include "stats.h"
 
+#include <sp2/scene/scene.h>
 #include <sp2/scene/voxelmap.h>
 #include <sp2/collision/3d/box.h>
 
@@ -152,4 +155,52 @@ Direction flipDirection(Direction d)
     case Direction::Left: return Direction::Right;
     }
     return Direction::Forward;
+}
+
+void World::save(sp::io::serialization::DataSet& data) const
+{
+    data.createList("sides", [this](sp::io::serialization::List& list)
+    {
+        for(auto& side : sides)
+        {
+            list.next([&side](sp::io::serialization::DataSet& data)
+            {
+                data.createList("tiles", [&side](sp::io::serialization::List& list)
+                {
+                    for(auto& tile : side.tiles)
+                    {
+                        list.next([&tile](sp::io::serialization::DataSet& data)
+                        {
+                            data.set("ground_type", tile.ground_type);
+                            data.set("item", tile.item);
+                            data.set("building", tile.building);
+                        });
+                    }
+                });
+            });
+        }
+    });
+}
+
+void World::load(const sp::io::serialization::DataSet& data)
+{
+    auto side = sides.begin();
+    data.getList("sides", [&side](const sp::io::serialization::DataSet& data)
+    {
+        auto tile = side->tiles.begin();
+        data.getList("tiles", [&tile](const sp::io::serialization::DataSet& data)
+        {
+            tile->ground_type = data.get<int>("ground_type");
+            data.getObject("item");
+            data.getObject("building");
+            tile++;
+        });
+        side++;
+    });
+    //TODO: Fix the voxel map with the ground_type data.
+}
+
+sp::AutoPointerObject* World::create(const sp::io::serialization::DataSet& data)
+{
+    return new World(sp::Scene::get("MAIN")->getRoot());
 }

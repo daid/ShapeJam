@@ -2,6 +2,7 @@
 
 #include <sp2/scene/node.h>
 #include <sp2/timer.h>
+#include <sp2/io/serialization/dataset.h>
 #include "itemType.h"
 #include "world.h"
 
@@ -18,6 +19,10 @@ public:
     const ItemType* getType() { return type; }
 
     virtual void onUpdate(float delta) override;
+
+    void save(sp::io::serialization::DataSet& data) const;
+    void load(const sp::io::serialization::DataSet& data);
+    static sp::AutoPointerObject* create(const sp::io::serialization::DataSet& data);
 private:
     const ItemType* type;
     Tile* tile;

@@ -7,6 +7,7 @@
 #include "belt.h"
 #include "factory.h"
 #include "bridge.h"
+#include "storage.h"
 
 #include <sp2/io/keyValueTreeLoader.h>
 #include <sp2/audio/sound.h>
@@ -37,6 +38,9 @@ sp::P<sp::Node> ItemType::placeAt(Tile* tile) const
         break;
     case BuildingType::Factory:
         building = new Factory(&tile->side.world, this);
+        break;
+    case BuildingType::Storage:
+        building = new Storage(&tile->side.world, this);
         break;
     }
 
@@ -87,6 +91,8 @@ void ItemType::init()
             entry->building_type = BuildingType::Factory;
         if (info.second["building"].lower() == "bridge")
             entry->building_type = BuildingType::Bridge;
+        if (info.second["building"].lower() == "storage")
+            entry->building_type = BuildingType::Storage;
         translations[info.first] = entry->label;
         items[info.first] = std::move(entry);
     }

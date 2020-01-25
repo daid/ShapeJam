@@ -4,6 +4,10 @@
 #include "recipe.h"
 #include "world.h"
 #include "building.h"
+#include "belt.h"
+#include "factory.h"
+#include "bridge.h"
+#include "miner.h"
 #include "stats.h"
 
 #include <sp2/engine.h>
@@ -14,6 +18,7 @@
 #include <sp2/collision/3d/box.h>
 #include <sp2/graphics/gui/loader.h>
 #include <sp2/audio/sound.h>
+#include <sp2/io/serialization/serializer.h>
 
 #include "twitch.h"
 
@@ -318,6 +323,14 @@ void Scene::onUpdate(float delta)
             sp::Engine::getInstance()->setGameSpeed(1.0);
             enable();
         });
+        menu->getWidgetWithID("SAVE")->setEventCallback([=](sp::Variant v) mutable
+        {
+            saveGame();
+        });
+        menu->getWidgetWithID("LOAD")->setEventCallback([=](sp::Variant v) mutable
+        {
+            loadGame();
+        });
         menu->getWidgetWithID("EXIT")->setEventCallback([=](sp::Variant v) mutable
         {
             menu.destroy();
@@ -603,4 +616,53 @@ void Scene::setupMessageConfirm()
 void Scene::enableRotation()
 {
     allow_rotate = true;
+}
+
+void Scene::saveGame()
+{
+    sp::io::serialization::Serializer ser("save.data", sp::io::serialization::Serializer::Mode::Write);
+    ser.registerClass<World>("World");
+    ser.registerClass<Item>("Item");
+    ser.registerClass<Belt>("Belt");
+    ser.registerClass<Splitter>("Splitter");
+
+    ser.set("camera_rx", camera_view_target->getRotation3D().x);
+    ser.set("camera_ry", camera_view_target->getRotation3D().y);
+    ser.set("camera_rz", camera_view_target->getRotation3D().z);
+    ser.set("camera_rw", camera_view_target->getRotation3D().w);
+    ser.createList("worlds", [this](sp::io::serialization::List& list)
+    {
+        for(sp::P<World> world : getRoot()->getChildren())
+        {
+            if (!world)
+                continue;
+            list.next([world](sp::io::serialization::DataSet& data)
+            {
+                data.set("position", world->getPosition3D());
+                data.set("world", world);
+            });
+        }
+    });
+}
+
+void Scene::loadGame()
+{
+    for(sp::P<World> world : getRoot()->getChildren())
+    {
+        world.destroy();
+    }
+
+    sp::io::serialization::Serializer ser("save.data", sp::io::serialization::Serializer::Mode::Read);
+    ser.registerClass<World>("World");
+    ser.registerClass<Item>("Item");
+    ser.registerClass<Belt>("Belt");
+    ser.registerClass<Splitter>("Splitter");
+
+    sp::Quaterniond camera_rotation(ser.get<double>("camera_rx"), ser.get<double>("camera_ry"), ser.get<double>("camera_rz"), ser.get<double>("camera_rw"));
+    camera_view_target->setRotation(camera_rotation);
+    ser.getList("worlds", [](const sp::io::serialization::DataSet& data)
+    {
+        sp::P<World> world = data.getObject("world");
+        world->setPosition(data.get<sp::Vector3d>("position"));
+    });
 }

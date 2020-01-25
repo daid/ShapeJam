@@ -5,6 +5,7 @@
 #include <sp2/io/zipResourceProvider.h>
 #include <sp2/io/directoryResourceProvider.h>
 #include <sp2/io/fileSelectionDialog.h>
+#include <sp2/io/filesystem.h>
 #include <sp2/audio/sound.h>
 #include <sp2/audio/music.h>
 #include <sp2/audio/musicPlayer.h>
@@ -22,6 +23,7 @@
 #include <sp2/scene/node.h>
 #include <sp2/scene/camera.h>
 #include <sp2/io/keybinding.h>
+#include <sp2/io/serialization/serializer.h>
 
 #include "main.h"
 #include "mainScene.h"
@@ -204,7 +206,7 @@ int main(int argc, char** argv)
     sp::io::ResourceProvider::createDefault();
 
     //Disable or enable smooth filtering by default, enabling it gives nice smooth looks, but disabling it gives a more pixel art look.
-    sp::texture_manager.setDefaultSmoothFiltering(true);
+    sp::texture_manager.setDefaultSmoothFiltering(false);
     sp::SpriteAnimation::setAtlasManager(&sprite_atlas_manager);
 
     //Create a window to render on, and our engine.
