@@ -165,27 +165,23 @@ void BridgeNode::onUpdate(float delta)
 void Bridge::save(sp::io::serialization::DataSet& data) const
 {
     Building::save(data);
+    data.set("entrance", entrance);
+    data.set("other_side", other_side);
 }
 
 void Bridge::load(const sp::io::serialization::DataSet& data)
 {
     Building::load(data);
+    init = false;
+    entrance = data.get<int>("entrance");
+    other_side = data.getObject("other_side");
+    if (!entrance && other_side)
+    {
+        visual->setRotation(sp::Quaterniond::fromAxisAngle(sp::Vector3d(1, 0, 0), -45));
+    }
 }
 
 sp::AutoPointerObject* Bridge::create(const sp::io::serialization::DataSet& data)
 {
     return new Bridge(data.getObject("world"));
-}
-
-void BridgeNode::save(sp::io::serialization::DataSet& data) const
-{
-}
-
-void BridgeNode::load(const sp::io::serialization::DataSet& data)
-{
-}
-
-sp::AutoPointerObject* BridgeNode::create(const sp::io::serialization::DataSet& data)
-{
-    return nullptr; //return new BridgeNode(
 }

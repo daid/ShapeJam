@@ -3,6 +3,7 @@
 #include "building.h"
 #include "itemType.h"
 #include "stats.h"
+#include "bridge.h"
 
 #include <sp2/scene/scene.h>
 #include <sp2/scene/voxelmap.h>
@@ -174,6 +175,10 @@ void World::save(sp::io::serialization::DataSet& data) const
                             data.set("ground_type", tile.ground_type);
                             data.set("item", tile.item);
                             data.set("building", tile.building);
+                            if (tile.bridge)
+                            {
+                                data.set("bridge_owner", tile.bridge->owner);
+                            }
                         });
                     }
                 });
@@ -193,6 +198,12 @@ void World::load(const sp::io::serialization::DataSet& data)
             tile->ground_type = data.get<int>("ground_type");
             data.getObject("item");
             data.getObject("building");
+            sp::P<Bridge> bridge_owner = data.getObject("bridge_owner");
+            if (bridge_owner)
+            {
+                sp::P<BridgeNode> node = new BridgeNode(bridge_owner, &*tile);
+                node->setRotation(bridge_owner->getRotation3D());
+            }
             tile++;
         });
         side++;

@@ -36,7 +36,7 @@ protected:
     void save(sp::io::serialization::DataSet& data) const;
     void load(const sp::io::serialization::DataSet& data);
 
-    Tile* corner_tile;
+    Tile* corner_tile = nullptr;
     Direction direction = Direction::Forward;
     sp::Vector2i size;
 };

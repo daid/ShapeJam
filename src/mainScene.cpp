@@ -629,7 +629,6 @@ void Scene::saveGame()
     ser.registerClass<Miner>("Miner");
     ser.registerClass<Factory>("Factory");
     ser.registerClass<Bridge>("Bridge");
-    ser.registerClass<BridgeNode>("BridgeNode");
 
     ser.set("camera_rx", camera_view_target->getRotation3D().x);
     ser.set("camera_ry", camera_view_target->getRotation3D().y);
@@ -665,7 +664,6 @@ void Scene::loadGame()
     ser.registerClass<Miner>("Miner");
     ser.registerClass<Factory>("Factory");
     ser.registerClass<Bridge>("Bridge");
-    ser.registerClass<BridgeNode>("BridgeNode");
 
     sp::Quaterniond camera_rotation(ser.get<double>("camera_rx"), ser.get<double>("camera_ry"), ser.get<double>("camera_rz"), ser.get<double>("camera_rw"));
     camera_view_target->setRotation(camera_rotation);

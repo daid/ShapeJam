@@ -28,6 +28,12 @@ public:
     : side(side), position(position)
     {
     }
+    ~Tile()
+    {
+        building.destroy();
+        bridge.destroy();
+        item.destroy();
+    }
 
     WorldSide& side;
     sp::Vector3d position;
