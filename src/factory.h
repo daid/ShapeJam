@@ -16,6 +16,9 @@ public:
     virtual void setRecipe(const Recipe* recipe) override;
     virtual const Recipe* getRecipe() override { return selected_recipe; }
 
+    void save(sp::io::serialization::DataSet& data) const;
+    void load(const sp::io::serialization::DataSet& data);
+    static sp::AutoPointerObject* create(const sp::io::serialization::DataSet& data);
 private:
     void idle();
     void building();

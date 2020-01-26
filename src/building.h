@@ -33,6 +33,9 @@ public:
 protected:
     Tile& getTile(sp::Vector2i offset);
 
+    void save(sp::io::serialization::DataSet& data) const;
+    void load(const sp::io::serialization::DataSet& data);
+
     Tile* corner_tile;
     Direction direction = Direction::Forward;
     sp::Vector2i size;

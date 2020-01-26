@@ -13,6 +13,10 @@ public:
     virtual void userRotate() override;
 
     virtual bool canBeBridged() override { return false; }
+
+    void save(sp::io::serialization::DataSet& data) const;
+    void load(const sp::io::serialization::DataSet& data);
+    static sp::AutoPointerObject* create(const sp::io::serialization::DataSet& data);
 private:
     void tryToConnect();
     void disconnect();
@@ -35,6 +39,10 @@ public:
     virtual ~BridgeNode();
 
     virtual void onUpdate(float delta) override;
+
+    void save(sp::io::serialization::DataSet& data) const;
+    void load(const sp::io::serialization::DataSet& data);
+    static sp::AutoPointerObject* create(const sp::io::serialization::DataSet& data);
 
     sp::P<Item> item;
     sp::P<Bridge> owner;

@@ -22,19 +22,12 @@ void Belt::onUpdate(float delta)
 
 void Belt::save(sp::io::serialization::DataSet& data) const
 {
-    data.set("world", getParent());
-    data.set("corner_tile_position", corner_tile->position);
-    data.set("corner_tile_normal", corner_tile->side.up);
-    data.set("direction", direction);
-    data.set("type", placed_from_type->name);
+    Building::save(data);
 }
 
 void Belt::load(const sp::io::serialization::DataSet& data)
 {
-    sp::P<World> world = getParent();
-    placeAt(&world->getTileAt(data.get<sp::Vector3d>("corner_tile_position"), data.get<sp::Vector3d>("corner_tile_normal")));
-    setDirection(data.get<Direction>("direction"));
-    placed_from_type = ItemType::get(data.get<sp::string>("type"));
+    Building::load(data);
 }
 
 sp::AutoPointerObject* Belt::create(const sp::io::serialization::DataSet& data)
@@ -72,20 +65,13 @@ void Splitter::onUpdate(float delta)
 
 void Splitter::save(sp::io::serialization::DataSet& data) const
 {
-    data.set("world", getParent());
-    data.set("corner_tile_position", corner_tile->position);
-    data.set("corner_tile_normal", corner_tile->side.up);
-    data.set("direction", direction);
-    data.set("type", placed_from_type->name);
+    Building::save(data);
     data.set("flip", flip);
 }
 
 void Splitter::load(const sp::io::serialization::DataSet& data)
 {
-    sp::P<World> world = getParent();
-    placeAt(&world->getTileAt(data.get<sp::Vector3d>("corner_tile_position"), data.get<sp::Vector3d>("corner_tile_normal")));
-    setDirection(data.get<Direction>("direction"));
-    placed_from_type = ItemType::get(data.get<sp::string>("type"));
+    Building::load(data);
     flip = data.get<int>("flip");
 }
 

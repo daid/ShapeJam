@@ -41,3 +41,22 @@ void Miner::onUpdate(float delta)
         }
     }
 }
+
+void Miner::save(sp::io::serialization::DataSet& data) const
+{
+    Building::save(data);
+    data.set("mine_spot", mine_spot);
+    data.set("mine_timer", mine_timer.getProgress());
+}
+
+void Miner::load(const sp::io::serialization::DataSet& data)
+{
+    Building::load(data);
+    mine_spot = data.get<int>("mine_spot");
+    mine_timer.setProgress(data.get<float>("mine_timer"));
+}
+
+sp::AutoPointerObject* Miner::create(const sp::io::serialization::DataSet& data)
+{
+    return new Miner(data.getObject("world"), ItemType::get(data.get<sp::string>("type")));
+}

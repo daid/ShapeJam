@@ -173,3 +173,77 @@ void Factory::setRecipe(const Recipe* recipe)
             selected_recipe = r;
     }
 }
+
+void Factory::save(sp::io::serialization::DataSet& data) const
+{
+    Building::save(data);
+    if (eject_list.size())
+    {
+        data.createList("eject_list", [this](sp::io::serialization::List& list)
+        {
+            for(auto type : eject_list)
+            {
+                list.next([type](sp::io::serialization::DataSet& data)
+                {
+                    data.set("type", type->name);
+                });
+            }
+        });
+    }
+    data.createList("inventory", [this](sp::io::serialization::List& list)
+    {
+        for(auto& inv : inventory)
+        {
+            if (inv.amount > 0)
+            {
+                list.next([&inv](sp::io::serialization::DataSet& data)
+                {
+                    data.set("amount", inv.amount);
+                    data.set("type", inv.type->name);
+                });
+            }
+        }
+    });
+    if (creating)
+    {
+        data.set("creating", creating->name);
+        data.set("create_timer", create_timer.getProgress());
+    }
+    if (selected_recipe)
+    {
+        data.set("selected_recipe", selected_recipe->name);
+    }
+}
+
+void Factory::load(const sp::io::serialization::DataSet& data)
+{
+    Building::load(data);
+    data.getList("eject_list", [this](const sp::io::serialization::DataSet& data)
+    {
+        eject_list.push_back(ItemType::get(data.get<sp::string>("type")));
+    });
+    data.getList("inventory", [this](const sp::io::serialization::DataSet& data)
+    {
+        const ItemType* type = ItemType::get(data.get<sp::string>("type"));
+        for(auto& inv : inventory)
+        {
+            if (inv.type == type)
+                inv.amount = data.get<int>("amount");
+        }
+    });
+    if (data.has("creating"))
+    {
+        creating = Recipe::get(data.get<sp::string>("creating"));
+        create_timer.start(creating->craft_time);
+        create_timer.setProgress(data.get<float>("create_timer"));
+    }
+    if (data.has("selected_recipe"))
+    {
+        selected_recipe = Recipe::get(data.get<sp::string>("selected_recipe"));
+    }
+}
+
+sp::AutoPointerObject* Factory::create(const sp::io::serialization::DataSet& data)
+{
+    return new Factory(data.getObject("world"), ItemType::get(data.get<sp::string>("type")));
+}

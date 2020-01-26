@@ -122,6 +122,7 @@ Scene::Scene()
 
         inventory[n].widget->setEventCallback([this, n](sp::Variant v)
         {
+            place_preview.destroy();
             for(auto& inv : inventory)
                 inv.widget->setAttribute("theme_data", "button");
             if (selected_inventory_index == int(n))
@@ -625,6 +626,10 @@ void Scene::saveGame()
     ser.registerClass<Item>("Item");
     ser.registerClass<Belt>("Belt");
     ser.registerClass<Splitter>("Splitter");
+    ser.registerClass<Miner>("Miner");
+    ser.registerClass<Factory>("Factory");
+    ser.registerClass<Bridge>("Bridge");
+    ser.registerClass<BridgeNode>("BridgeNode");
 
     ser.set("camera_rx", camera_view_target->getRotation3D().x);
     ser.set("camera_ry", camera_view_target->getRotation3D().y);
@@ -657,6 +662,10 @@ void Scene::loadGame()
     ser.registerClass<Item>("Item");
     ser.registerClass<Belt>("Belt");
     ser.registerClass<Splitter>("Splitter");
+    ser.registerClass<Miner>("Miner");
+    ser.registerClass<Factory>("Factory");
+    ser.registerClass<Bridge>("Bridge");
+    ser.registerClass<BridgeNode>("BridgeNode");
 
     sp::Quaterniond camera_rotation(ser.get<double>("camera_rx"), ser.get<double>("camera_ry"), ser.get<double>("camera_rz"), ser.get<double>("camera_rw"));
     camera_view_target->setRotation(camera_rotation);

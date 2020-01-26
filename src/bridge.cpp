@@ -161,3 +161,31 @@ void BridgeNode::onUpdate(float delta)
         item->requestMoveUpBridge(owner->getDirection());
     }
 }
+
+void Bridge::save(sp::io::serialization::DataSet& data) const
+{
+    Building::save(data);
+}
+
+void Bridge::load(const sp::io::serialization::DataSet& data)
+{
+    Building::load(data);
+}
+
+sp::AutoPointerObject* Bridge::create(const sp::io::serialization::DataSet& data)
+{
+    return new Bridge(data.getObject("world"));
+}
+
+void BridgeNode::save(sp::io::serialization::DataSet& data) const
+{
+}
+
+void BridgeNode::load(const sp::io::serialization::DataSet& data)
+{
+}
+
+sp::AutoPointerObject* BridgeNode::create(const sp::io::serialization::DataSet& data)
+{
+    return nullptr; //return new BridgeNode(
+}
