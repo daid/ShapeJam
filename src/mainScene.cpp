@@ -315,14 +315,12 @@ void Scene::onUpdate(float delta)
 {
     if (escape_key.getUp())
     {
-        disable();
         sp::Engine::getInstance()->setGameSpeed(0.0);
         sp::P<sp::gui::Widget> menu = sp::gui::Loader::load("gui/ingame_menu.gui", "INGAME_MENU");
         menu->getWidgetWithID("RESUME")->setEventCallback([=](sp::Variant v) mutable
         {
             menu.destroy();
             sp::Engine::getInstance()->setGameSpeed(1.0);
-            enable();
         });
         menu->getWidgetWithID("SAVE")->setEventCallback([=](sp::Variant v) mutable
         {
