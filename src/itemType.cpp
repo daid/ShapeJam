@@ -11,6 +11,8 @@
 
 #include <sp2/io/keyValueTreeLoader.h>
 #include <sp2/audio/sound.h>
+#include <sp2/stringutil/convert.h>
+
 
 std::unordered_map<sp::string, std::unique_ptr<ItemType>> ItemType::items;
 std::map<sp::string, sp::string> ItemType::translations;

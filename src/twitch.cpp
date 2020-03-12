@@ -3,6 +3,7 @@
 
 #include <sp2/io/resourceProvider.h>
 #include <sp2/random.h>
+#include <sp2/stringutil/convert.h>
 
 
 TwitchTest::TwitchTest(sp::string channel)

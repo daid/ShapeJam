@@ -1,6 +1,7 @@
 #include "recipe.h"
 
 #include <sp2/io/keyValueTreeLoader.h>
+#include <sp2/stringutil/convert.h>
 #include <sp2/assert.h>
 
 std::unordered_map<sp::string, std::unique_ptr<Recipe>> Recipe::items;
