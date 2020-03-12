@@ -632,19 +632,15 @@ void Scene::saveGame()
     ser.set("camera_ry", camera_view_target->getRotation3D().y);
     ser.set("camera_rz", camera_view_target->getRotation3D().z);
     ser.set("camera_rw", camera_view_target->getRotation3D().w);
-    ser.createList("worlds", [this](sp::io::serialization::List& list)
+    auto list = ser.createList("worlds");
+    for(sp::P<World> world : getRoot()->getChildren())
     {
-        for(sp::P<World> world : getRoot()->getChildren())
-        {
-            if (!world)
-                continue;
-            list.next([world](sp::io::serialization::DataSet& data)
-            {
-                data.set("position", world->getPosition3D());
-                data.set("world", world);
-            });
-        }
-    });
+        if (!world)
+            continue;
+        auto data = list.next();
+        data.set("position", world->getPosition3D());
+        data.set("world", world);
+    }
 }
 
 void Scene::loadGame()
@@ -665,9 +661,9 @@ void Scene::loadGame()
 
     sp::Quaterniond camera_rotation(ser.get<double>("camera_rx"), ser.get<double>("camera_ry"), ser.get<double>("camera_rz"), ser.get<double>("camera_rw"));
     camera_view_target->setRotation(camera_rotation);
-    ser.getList("worlds", [](const sp::io::serialization::DataSet& data)
+    for(const auto& data : ser.getList("worlds"))
     {
         sp::P<World> world = data.getObject("world");
         world->setPosition(data.get<sp::Vector3d>("position"));
-    });
+    }
 }

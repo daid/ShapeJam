@@ -160,54 +160,46 @@ Direction flipDirection(Direction d)
 
 void World::save(sp::io::serialization::DataSet& data) const
 {
-    data.createList("sides", [this](sp::io::serialization::List& list)
+    auto list = data.createList("sides");
+    for(auto& side : sides)
     {
-        for(auto& side : sides)
+        auto data = list.next();
+        auto tile_list = data.createList("tiles");
+        for(auto& tile : side.tiles)
         {
-            list.next([&side](sp::io::serialization::DataSet& data)
+            auto tile_data = tile_list.next();
+            tile_data.set("ground_type", tile.ground_type);
+            tile_data.set("item", tile.item);
+            tile_data.set("building", tile.building);
+            if (tile.bridge)
             {
-                data.createList("tiles", [&side](sp::io::serialization::List& list)
-                {
-                    for(auto& tile : side.tiles)
-                    {
-                        list.next([&tile](sp::io::serialization::DataSet& data)
-                        {
-                            data.set("ground_type", tile.ground_type);
-                            data.set("item", tile.item);
-                            data.set("building", tile.building);
-                            if (tile.bridge)
-                            {
-                                data.set("bridge_owner", tile.bridge->owner);
-                            }
-                        });
-                    }
-                });
-            });
+                tile_data.set("bridge_owner", tile.bridge->owner);
+            }
         }
-    });
+    }
 }
 
 void World::load(const sp::io::serialization::DataSet& data)
 {
     auto side = sides.begin();
-    data.getList("sides", [&side](const sp::io::serialization::DataSet& data)
+    for(const auto& data : data.getList("sides"))
     {
         auto tile = side->tiles.begin();
-        data.getList("tiles", [&tile](const sp::io::serialization::DataSet& data)
+        for(const auto& tile_data : data.getList("tiles"))
         {
-            tile->ground_type = data.get<int>("ground_type");
-            data.getObject("item");
-            data.getObject("building");
-            sp::P<Bridge> bridge_owner = data.getObject("bridge_owner");
+            tile->ground_type = tile_data.get<int>("ground_type");
+            tile_data.getObject("item");
+            tile_data.getObject("building");
+            sp::P<Bridge> bridge_owner = tile_data.getObject("bridge_owner");
             if (bridge_owner)
             {
                 sp::P<BridgeNode> node = new BridgeNode(bridge_owner, &*tile);
                 node->setRotation(bridge_owner->getRotation3D());
             }
             tile++;
-        });
+        }
         side++;
-    });
+    }
     //TODO: Fix the voxel map with the ground_type data.
 }
 

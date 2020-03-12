@@ -179,31 +179,23 @@ void Factory::save(sp::io::serialization::DataSet& data) const
     Building::save(data);
     if (eject_list.size())
     {
-        data.createList("eject_list", [this](sp::io::serialization::List& list)
+        auto list = data.createList("eject_list");
+        for(auto type : eject_list)
         {
-            for(auto type : eject_list)
-            {
-                list.next([type](sp::io::serialization::DataSet& data)
-                {
-                    data.set("type", type->name);
-                });
-            }
-        });
-    }
-    data.createList("inventory", [this](sp::io::serialization::List& list)
-    {
-        for(auto& inv : inventory)
-        {
-            if (inv.amount > 0)
-            {
-                list.next([&inv](sp::io::serialization::DataSet& data)
-                {
-                    data.set("amount", inv.amount);
-                    data.set("type", inv.type->name);
-                });
-            }
+            auto edata = list.next();
+            edata.set("type", type->name);
         }
-    });
+    }
+    auto list = data.createList("inventory");
+    for(auto& inv : inventory)
+    {
+        if (inv.amount > 0)
+        {
+            auto idata = list.next();
+            idata.set("amount", inv.amount);
+            idata.set("type", inv.type->name);
+        }
+    }
     if (creating)
     {
         data.set("creating", creating->name);
@@ -218,19 +210,19 @@ void Factory::save(sp::io::serialization::DataSet& data) const
 void Factory::load(const sp::io::serialization::DataSet& data)
 {
     Building::load(data);
-    data.getList("eject_list", [this](const sp::io::serialization::DataSet& data)
+    for(const auto& edata : data.getList("eject_list"))
     {
-        eject_list.push_back(ItemType::get(data.get<sp::string>("type")));
-    });
-    data.getList("inventory", [this](const sp::io::serialization::DataSet& data)
+        eject_list.push_back(ItemType::get(edata.get<sp::string>("type")));
+    }
+    for(const auto& idata : data.getList("inventory"))
     {
-        const ItemType* type = ItemType::get(data.get<sp::string>("type"));
+        const ItemType* type = ItemType::get(idata.get<sp::string>("type"));
         for(auto& inv : inventory)
         {
             if (inv.type == type)
-                inv.amount = data.get<int>("amount");
+                inv.amount = idata.get<int>("amount");
         }
-    });
+    }
     if (data.has("creating"))
     {
         creating = Recipe::get(data.get<sp::string>("creating"));
