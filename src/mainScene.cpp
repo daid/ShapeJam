@@ -167,7 +167,7 @@ Scene::Scene()
     script_environment->setGlobal("enableRotation", lua_enableRotation);
     script_environment->setGlobal("secondStats", lua_secondStats);
     script_environment->setGlobal("minuteStats", lua_minuteStats);
-    script_coroutine = script_environment->callCoroutine("run");
+    script_coroutine = script_environment->callCoroutine("run").value();
 }
 
 Scene::~Scene()
@@ -381,7 +381,7 @@ void Scene::onUpdate(float delta)
 
 void Scene::onFixedUpdate()
 {
-    if (script_coroutine && !script_blocked && !script_coroutine->resume())
+    if (script_coroutine && !script_blocked && !script_coroutine->resume().value())
         script_coroutine = nullptr;
     
     if (script_message_length < script_message.length())
