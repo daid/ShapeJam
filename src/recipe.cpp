@@ -11,7 +11,7 @@ void Recipe::init()
     if (!items.empty())
         return;
 
-    auto tree = sp::io::KeyValueTreeLoader::load("recipe.txt");
+    auto tree = sp::io::KeyValueTreeLoader::loadResource("recipe.txt");
     for(auto& node : tree->root_nodes)
     {
         LOG(Info, "New recipe:", node.id);
