@@ -102,7 +102,7 @@ void ItemType::init()
 
 void ItemType::initRecipes()
 {
-    for(auto info : sp::io::KeyValueTreeLoader::load("items.txt")->getFlattenNodesByIds())
+    for(auto info : sp::io::KeyValueTreeLoader::loadResource("items.txt")->getFlattenNodesByIds())
     {
         if (info.second.find("recipes") != info.second.end())
         {
