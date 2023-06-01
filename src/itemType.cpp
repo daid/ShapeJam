@@ -70,7 +70,7 @@ void ItemType::init()
     if (!items.empty())
         return;
 
-    for(auto info : sp::io::KeyValueTreeLoader::load("items.txt")->getFlattenNodesByIds())
+    for(auto info : sp::io::KeyValueTreeLoader::loadResource("items.txt")->getFlattenNodesByIds())
     {
         auto entry = std::unique_ptr<ItemType>(new ItemType());
         entry->name = info.first;
